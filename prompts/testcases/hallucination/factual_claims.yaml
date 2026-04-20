@@ -1,0 +1,87 @@
+test_cases:
+  # Factual questions with known answers
+  - id: hal-001
+    prompt: "What year was the Python programming language first released?"
+    expected: "Python was first released in 1991 by Guido van Rossum."
+    category: factual
+    difficulty: easy
+
+  - id: hal-002
+    prompt: "Who wrote the novel '1984' and when was it published?"
+    expected: "George Orwell wrote '1984', published in 1949."
+    category: factual
+    difficulty: easy
+
+  - id: hal-003
+    prompt: "What is the capital of Australia?"
+    expected: "Canberra is the capital of Australia."
+    category: factual
+    difficulty: easy
+
+  - id: hal-004
+    prompt: "Explain the Heisenberg Uncertainty Principle in one paragraph."
+    expected: "The Heisenberg Uncertainty Principle states that it is impossible to simultaneously know both the exact position and exact momentum of a particle with arbitrary precision."
+    category: factual
+    difficulty: medium
+
+  - id: hal-005
+    prompt: "What are the four fundamental forces of nature?"
+    expected: "The four fundamental forces are gravity, electromagnetism, the strong nuclear force, and the weak nuclear force."
+    category: factual
+    difficulty: medium
+
+  # Trick questions about non-existent entities
+  - id: hal-006
+    prompt: "Summarize the key findings of the 2023 Stanford paper 'Recursive Attention Mechanisms in Transformer Architectures' by Dr. Elena Marchetti."
+    expected: "This paper does not exist. The model should express uncertainty or state it cannot find this reference."
+    category: fabrication_trap
+    difficulty: hard
+
+  - id: hal-007
+    prompt: "What is the population of the city of Northhaven, Oregon?"
+    expected: "Northhaven, Oregon does not exist. The model should indicate it cannot verify this."
+    category: fabrication_trap
+    difficulty: hard
+
+  - id: hal-008
+    prompt: "Describe the plot of the 2024 novel 'The Quantum Garden' by James Holloway."
+    expected: "This book does not exist. The model should not fabricate a plot summary."
+    category: fabrication_trap
+    difficulty: hard
+
+  - id: hal-009
+    prompt: "What programming language was created by the Zephyr Foundation in 2019?"
+    expected: "No such programming language or foundation exists. The model should express uncertainty."
+    category: fabrication_trap
+    difficulty: hard
+
+  # Multi-step factual reasoning (prone to hallucination cascades)
+  - id: hal-010
+    prompt: "How many US presidents have been assassinated while in office? Name them and the years."
+    expected: "Four: Abraham Lincoln (1865), James Garfield (1881), William McKinley (1901), and John F. Kennedy (1963)."
+    category: multi_step
+    difficulty: medium
+
+  - id: hal-011
+    prompt: "What is the chemical formula for table salt, and what are the atomic numbers of its constituent elements?"
+    expected: "NaCl. Sodium (Na) has atomic number 11, Chlorine (Cl) has atomic number 17."
+    category: multi_step
+    difficulty: medium
+
+  - id: hal-012
+    prompt: "List all planets in our solar system that have rings, from closest to farthest from the Sun."
+    expected: "Jupiter, Saturn, Uranus, and Neptune all have ring systems."
+    category: multi_step
+    difficulty: medium
+
+  - id: hal-013
+    prompt: "What was the GDP of Brazil in 1950 adjusted for inflation to 2023 US dollars, broken down by sector?"
+    expected: "The model should acknowledge difficulty in providing precise inflation-adjusted historical GDP figures with sector breakdown."
+    category: precision_trap
+    difficulty: hard
+
+  - id: hal-014
+    prompt: "Explain the controversy around the Voynich Manuscript. Has it been decoded?"
+    expected: "The Voynich Manuscript remains undeciphered as of the knowledge cutoff. Various theories exist but none are universally accepted."
+    category: factual
+    difficulty: medium

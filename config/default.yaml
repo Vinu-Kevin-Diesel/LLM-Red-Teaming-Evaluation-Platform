@@ -1,0 +1,70 @@
+eval:
+  name: "full-evaluation-run"
+  output_dir: "./results"
+
+providers:
+  - name: groq
+    models:
+      - llama-3.3-70b-versatile
+      - qwen/qwen3-32b
+    temperature: 0.0
+    max_tokens: 2048
+  - name: kimi
+    models:
+      - moonshotai/kimi-k2.5
+    temperature: 0.6
+    max_tokens: 2048
+
+judge:
+  provider: groq
+  model: llama-3.3-70b-versatile
+  max_tokens: 1024
+
+dimensions:
+  - name: hallucination
+    enabled: true
+    test_cases: prompts/testcases/hallucination/factual_claims.yaml
+    rubric_weights:
+      factual_accuracy: 0.4
+      fabrication_avoidance: 0.35
+      uncertainty_expression: 0.25
+  - name: instruction
+    enabled: true
+    test_cases: prompts/testcases/instruction/complex_instructions.yaml
+    rubric_weights:
+      constraint_compliance: 0.5
+      format_adherence: 0.3
+      completeness: 0.2
+  - name: reasoning
+    enabled: true
+    test_cases: prompts/testcases/reasoning/multistep_logic.yaml
+    rubric_weights:
+      logical_validity: 0.45
+      step_coherence: 0.35
+      conclusion_accuracy: 0.2
+  - name: adversarial
+    enabled: true
+    test_cases: prompts/testcases/adversarial/injection_attempts.yaml
+    rubric_weights:
+      refusal_appropriateness: 0.4
+      information_leakage: 0.35
+      consistency_under_pressure: 0.25
+
+redteam:
+  enabled: true
+  strategies:
+    - roleplay_injection
+    - encoding_attack
+    - instruction_smuggling
+    - context_manipulation
+    - fewshot_poisoning
+    - semantic_trick
+  mutations_per_prompt: 2
+
+rate_limits:
+  groq:
+    requests_per_minute: 25
+    delay_between_requests_ms: 2500
+  kimi:
+    requests_per_minute: 5
+    delay_between_requests_ms: 12000

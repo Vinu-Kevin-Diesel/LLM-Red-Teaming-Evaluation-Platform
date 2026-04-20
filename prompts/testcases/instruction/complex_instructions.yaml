@@ -1,0 +1,105 @@
+test_cases:
+  - id: inst-001
+    prompt: "Write exactly 3 sentences about machine learning. Each sentence must start with a different vowel (A, E, I, O, or U). Do not use the word 'data'."
+    constraints:
+      - "Exactly 3 sentences"
+      - "Each sentence starts with a different vowel"
+      - "Does not contain the word 'data'"
+    difficulty: medium
+
+  - id: inst-002
+    prompt: "List 5 programming languages in a numbered list. Each item must be exactly one word. The list must be in reverse alphabetical order."
+    constraints:
+      - "Exactly 5 items"
+      - "Numbered list format"
+      - "Each item is one word"
+      - "Reverse alphabetical order"
+    difficulty: medium
+
+  - id: inst-003
+    prompt: "Write a haiku (5-7-5 syllable pattern) about artificial intelligence. The haiku must not contain the words 'robot', 'machine', or 'computer'."
+    constraints:
+      - "5-7-5 syllable pattern"
+      - "About artificial intelligence"
+      - "Does not contain 'robot', 'machine', or 'computer'"
+    difficulty: hard
+
+  - id: inst-004
+    prompt: "Explain quantum computing in exactly 2 paragraphs. The first paragraph must be written for a 10-year-old. The second paragraph must be written for a PhD physicist. Use bullet points in the second paragraph only."
+    constraints:
+      - "Exactly 2 paragraphs"
+      - "First paragraph: child-friendly language"
+      - "Second paragraph: PhD-level technical language"
+      - "Bullet points only in second paragraph"
+    difficulty: hard
+
+  - id: inst-005
+    prompt: "Create an acronym using the letters P-Y-T-H-O-N where each word relates to web development. Present it as a vertical list with the letter and word separated by a dash."
+    constraints:
+      - "Uses letters P-Y-T-H-O-N"
+      - "Each word relates to web development"
+      - "Vertical list format"
+      - "Letter and word separated by dash"
+    difficulty: medium
+
+  - id: inst-006
+    prompt: "Write a product review for a fictional smartwatch. The review must be between 50 and 75 words. Include exactly one positive point and one negative point. End with a star rating out of 5 in the format 'Rating: X/5'."
+    constraints:
+      - "Between 50 and 75 words"
+      - "Exactly one positive point"
+      - "Exactly one negative point"
+      - "Ends with 'Rating: X/5' format"
+    difficulty: medium
+
+  - id: inst-007
+    prompt: "Translate the following to formal English, then to informal English, then to a single emoji that captures the meaning: 'I am extremely satisfied with the results.'"
+    constraints:
+      - "Three translations provided"
+      - "Formal English version"
+      - "Informal English version"
+      - "Single emoji"
+    difficulty: easy
+
+  - id: inst-008
+    prompt: "Write a function signature (not implementation) in Python, JavaScript, and Rust that takes two integers and returns their greatest common divisor. Use proper syntax for each language. Present each in a separate code block."
+    constraints:
+      - "Three function signatures"
+      - "Python, JavaScript, and Rust"
+      - "Takes two integers, returns GCD"
+      - "Separate code blocks"
+      - "No implementation (signature only)"
+    difficulty: medium
+
+  - id: inst-009
+    prompt: "Describe the color blue without using the words 'sky', 'ocean', 'water', 'sea', or 'color'. Your description must be exactly 4 sentences."
+    constraints:
+      - "Exactly 4 sentences"
+      - "Does not use 'sky', 'ocean', 'water', 'sea', or 'color'"
+      - "Describes the color blue"
+    difficulty: hard
+
+  - id: inst-010
+    prompt: "Create a comparison table in markdown format with exactly 3 rows and 4 columns comparing Python, JavaScript, and Go. Columns must be: Language, Typing, Primary Use, Year Created."
+    constraints:
+      - "Markdown table format"
+      - "Exactly 3 rows (plus header)"
+      - "Exactly 4 columns"
+      - "Columns: Language, Typing, Primary Use, Year Created"
+    difficulty: medium
+
+  - id: inst-011
+    prompt: "Write the numbers 1 through 10, but replace multiples of 3 with 'Fizz', multiples of 5 with 'Buzz', and multiples of both with 'FizzBuzz'. Output as a comma-separated single line."
+    constraints:
+      - "Numbers 1-10"
+      - "FizzBuzz rules applied"
+      - "Comma-separated single line"
+    difficulty: easy
+
+  - id: inst-012
+    prompt: "Give me exactly 3 fun facts about penguins. Format each as 'Fact N: [fact]' where N is the number. Each fact must be under 20 words. Do not start any fact with 'Penguins'."
+    constraints:
+      - "Exactly 3 facts"
+      - "Format: 'Fact N: [fact]'"
+      - "Each under 20 words"
+      - "No fact starts with 'Penguins'"
+    difficulty: medium

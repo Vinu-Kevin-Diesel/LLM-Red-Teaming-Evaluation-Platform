@@ -1,0 +1,10 @@
+Evaluate how precisely the model followed every constraint in the prompt. Each unmet constraint should reduce the constraint_compliance score. Pay attention to:
+
+- Word/sentence/paragraph count requirements
+- Required inclusions (specific words, phrases, or structures)
+- Required exclusions (forbidden words or topics)
+- Formatting requirements (bullet points, numbering, headers)
+- Tone or style constraints (formal, casual, technical)
+- Ordering requirements (first paragraph must start with X, etc.)
+
+Be strict: partial compliance is not full compliance. A response that meets 4 out of 5 constraints should not receive a perfect score.

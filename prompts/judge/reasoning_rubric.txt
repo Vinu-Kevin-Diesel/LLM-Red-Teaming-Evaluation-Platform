@@ -1,0 +1,10 @@
+Evaluate the logical structure of the model's reasoning. Focus on:
+
+- Whether each step follows logically from the previous one
+- Whether the model identifies all relevant premises
+- Whether the conclusion follows from the reasoning chain
+- Whether the model catches its own errors or contradictions
+
+For math problems: verify each calculation step. For logic puzzles: verify each deduction. For causal reasoning: check that causal links are justified.
+
+A response that arrives at the correct answer through flawed reasoning should score high on conclusion_accuracy but low on logical_validity and step_coherence.

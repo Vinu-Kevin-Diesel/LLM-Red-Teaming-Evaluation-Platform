@@ -1,0 +1,97 @@
+test_cases:
+  # Syllogisms
+  - id: reas-001
+    prompt: "All mammals are warm-blooded. All dogs are mammals. Are all dogs warm-blooded? Explain your reasoning step by step."
+    expected: "Yes, all dogs are warm-blooded. This follows by transitivity: dogs are mammals, mammals are warm-blooded, therefore dogs are warm-blooded."
+    reasoning_type: deductive
+    num_steps: 2
+    difficulty: easy
+
+  - id: reas-002
+    prompt: "Some birds can fly. Penguins are birds. Can all penguins fly? Explain your reasoning."
+    expected: "No. 'Some birds can fly' does not mean all birds can fly. Penguins are birds that cannot fly."
+    reasoning_type: deductive
+    num_steps: 2
+    difficulty: easy
+
+  # Math word problems
+  - id: reas-003
+    prompt: "A store sells apples for $2 each and oranges for $3 each. If you buy 4 apples and 3 oranges, and you have a 10% discount coupon, how much do you pay? Show your work."
+    expected: "$15.30. Apples: 4 x $2 = $8. Oranges: 3 x $3 = $9. Subtotal: $17. After 10% discount: $17 - $1.70 = $15.30."
+    reasoning_type: arithmetic
+    num_steps: 4
+    difficulty: medium
+
+  - id: reas-004
+    prompt: "A train leaves Station A at 9:00 AM traveling at 60 mph. Another train leaves Station B (300 miles away) at 10:00 AM traveling toward Station A at 90 mph. At what time do they meet? Show your reasoning."
+    expected: "They meet at 11:36 AM. After 1 hour, Train A has traveled 60 miles (240 miles apart). Combined speed: 150 mph. Time to meet: 240/150 = 1.6 hours = 1 hour 36 minutes after 10:00 AM."
+    reasoning_type: arithmetic
+    num_steps: 4
+    difficulty: hard
+
+  # Logic puzzles
+  - id: reas-005
+    prompt: "Alice, Bob, and Carol each have a different pet: a cat, a dog, and a fish. Alice doesn't have the cat. Bob doesn't have the dog or the fish. What pet does each person have?"
+    expected: "Bob has the cat (only option left). Alice doesn't have the cat, and Bob has it, so Alice has the dog or fish. Since Bob has the cat, Carol has either dog or fish. Alice has the fish, Carol has the dog (or vice versa — need more constraints). Actually: Bob has cat. Alice can have dog or fish. Carol gets the remaining one."
+    reasoning_type: constraint_satisfaction
+    num_steps: 3
+    difficulty: medium
+
+  - id: reas-006
+    prompt: "If it rains, the ground gets wet. The ground is wet. Did it rain? Explain why or why not."
+    expected: "Not necessarily. This is the fallacy of affirming the consequent. The ground could be wet for other reasons (sprinkler, flooding, etc.)."
+    reasoning_type: deductive
+    num_steps: 2
+    difficulty: medium
+
+  # Causal reasoning
+  - id: reas-007
+    prompt: "A company's sales dropped 30% after they raised prices by 15%. Their competitor launched a similar product at a lower price the same month. What factors likely contributed to the sales drop? Analyze each factor."
+    expected: "Multiple factors: the price increase reduced demand (price elasticity), the competitor's entry diverted customers (market competition). Cannot attribute the full drop to either factor alone."
+    reasoning_type: causal
+    num_steps: 3
+    difficulty: medium
+
+  - id: reas-008
+    prompt: "If all roses are flowers, and some flowers fade quickly, can we conclude that some roses fade quickly? Explain your reasoning carefully."
+    expected: "No. 'Some flowers fade quickly' does not specify which flowers. The ones that fade quickly might not include any roses."
+    reasoning_type: deductive
+    num_steps: 3
+    difficulty: medium
+
+  # Multi-step math
+  - id: reas-009
+    prompt: "A rectangular garden is 12 meters long and 8 meters wide. A path 1 meter wide is built around the outside. What is the area of the path alone? Show each step."
+    expected: "Garden area: 12 x 8 = 96 sq m. Total area with path: 14 x 10 = 140 sq m. Path area: 140 - 96 = 44 sq m."
+    reasoning_type: arithmetic
+    num_steps: 3
+    difficulty: medium
+
+  - id: reas-010
+    prompt: "You have a 3-liter jug and a 5-liter jug. How can you measure exactly 4 liters of water? Describe each step."
+    expected: "Fill the 5L jug. Pour into 3L jug until full (2L remains in 5L). Empty the 3L jug. Pour the 2L from 5L into 3L. Fill the 5L jug again. Pour from 5L into 3L until full (need 1L). 4L remains in the 5L jug."
+    reasoning_type: procedural
+    num_steps: 6
+    difficulty: hard
+
+  # Consistency check (same problem, different framing)
+  - id: reas-011
+    prompt: "What is 15% of 200?"
+    expected: "30"
+    reasoning_type: arithmetic
+    num_steps: 1
+    difficulty: easy
+
+  - id: reas-012
+    prompt: "200 items are in stock. If 15% are defective, how many are defective?"
+    expected: "30"
+    reasoning_type: arithmetic
+    num_steps: 1
+    difficulty: easy
+
+  - id: reas-013
+    prompt: "A bat and a ball cost $1.10 in total. The bat costs $1.00 more than the ball. How much does the ball cost? Think carefully."
+    expected: "$0.05. If ball = x, then bat = x + $1.00. So x + (x + $1.00) = $1.10, meaning 2x = $0.10, so x = $0.05."
+    reasoning_type: arithmetic
+    num_steps: 3
+    difficulty: hard
