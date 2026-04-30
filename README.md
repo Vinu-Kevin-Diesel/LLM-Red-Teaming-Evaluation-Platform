@@ -1,4 +1,5 @@
-# LLM Eval Forge
+# LLM-Red-Teaming-Evaluation-Platform
+
 
 Modular LLM evaluation and red-teaming framework that stress-tests language models across hallucination, instruction-following, reasoning consistency, and adversarial robustness using automated judge scoring and mutation-based attacks.
 
