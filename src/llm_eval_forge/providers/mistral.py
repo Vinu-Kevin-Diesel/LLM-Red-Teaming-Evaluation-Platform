@@ -1,4 +1,4 @@
-"""Kimi 2.5 (Moonshot AI) provider — free via NVIDIA NIM, OpenAI-compatible API."""
+"""Mistral provider — Mistral Medium 3.5 via NVIDIA NIM, free tier, OpenAI-compatible API."""
 
 from __future__ import annotations
 
@@ -11,13 +11,14 @@ from llm_eval_forge.providers.base import LLMProvider, LLMResponse
 from llm_eval_forge.providers.registry import register_provider
 
 
-@register_provider("kimi")
-class KimiProvider(LLMProvider):
-    name = "kimi"
+@register_provider("mistral")
+class MistralProvider(LLMProvider):
+    name = "mistral"
 
-    DEFAULT_MODELS = ["moonshotai/kimi-k2.5"]
+    DEFAULT_MODELS = ["mistralai/mistral-medium-3.5-128b"]
 
-    def __init__(self, model: str = "moonshotai/kimi-k2.5", api_key: str | None = None):
+    def __init__(self, model: str = "mistralai/mistral-medium-3.5-128b",
+                 api_key: str | None = None):
         self.model = model
         self.client = AsyncOpenAI(
             api_key=api_key or os.environ.get("NVIDIA_API_KEY", ""),
@@ -38,18 +39,14 @@ class KimiProvider(LLMProvider):
         response = await self.client.chat.completions.create(
             model=self.model,
             messages=messages,
-            temperature=temperature if temperature > 0 else 0.6,
+            temperature=temperature,
             max_tokens=max_tokens,
         )
         elapsed = (time.perf_counter() - start) * 1000
 
         choice = response.choices[0]
-        # Kimi K2.5 uses thinking mode: answer may be in content or reasoning
-        text = choice.message.content or ""
-        if not text and hasattr(choice.message, "reasoning") and choice.message.reasoning:
-            text = choice.message.reasoning
         return LLMResponse(
-            text=text,
+            text=choice.message.content or "",
             model=self.model,
             provider=self.name,
             latency_ms=round(elapsed, 1),

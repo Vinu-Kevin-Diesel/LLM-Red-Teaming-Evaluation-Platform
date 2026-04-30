@@ -5,7 +5,8 @@ from llm_eval_forge.providers.registry import get_provider, list_providers
 
 # Import providers to trigger registration
 import llm_eval_forge.providers.groq  # noqa: F401
-import llm_eval_forge.providers.kimi  # noqa: F401
+import llm_eval_forge.providers.cerebras  # noqa: F401
+import llm_eval_forge.providers.mistral  # noqa: F401
 import llm_eval_forge.providers.huggingface  # noqa: F401
 
 __all__ = ["LLMProvider", "LLMResponse", "get_provider", "list_providers"]
