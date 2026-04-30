@@ -24,11 +24,13 @@ logger = logging.getLogger(__name__)
 class EvalRunner:
     """Orchestrates the full evaluation pipeline."""
 
-    def __init__(self, config: EvalConfig):
+    def __init__(self, config: EvalConfig, no_judge: bool = False):
         self.config = config
-        self.judge = LLMJudge(
+        self.no_judge = no_judge
+        self.judge = None if no_judge else LLMJudge(
             backend=config.judge.provider,
             model=config.judge.model,
+            max_tokens=config.judge.max_tokens,
         )
         self.results: list[EvalResult] = []
 
@@ -170,19 +172,21 @@ class EvalRunner:
             # Delay before judge call to respect rate limits
             await asyncio.sleep(delay)
 
-            # Judge the response
-            context = evaluator.build_judge_payload(test_case, response.text)
-            try:
-                verdict = self.judge.score(
-                    dimension=dimension,
-                    prompt=test_case.prompt,
-                    response=response.text,
-                    rubric=rubric,
-                    context=context,
-                )
-            except Exception as e:
-                logger.error(f"Judge error: {e}")
-                verdict = None
+            # Judge the response (skipped when --no-judge)
+            verdict = None
+            if not self.no_judge:
+                context = evaluator.build_judge_payload(test_case, response.text)
+                try:
+                    verdict = self.judge.score(
+                        dimension=dimension,
+                        prompt=test_case.prompt,
+                        response=response.text,
+                        rubric=rubric,
+                        context=context,
+                    )
+                except Exception as e:
+                    logger.error(f"Judge error: {e}")
+                    verdict = None
 
             result = EvalResult(
                 test_case_id=test_case.id,

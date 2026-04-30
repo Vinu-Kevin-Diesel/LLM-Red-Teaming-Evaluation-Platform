@@ -1,16 +1,21 @@
-"""LLM judge for scoring responses — supports Groq, NVIDIA NIM, and Claude."""
+"""LLM judge for scoring responses — supports Claude (Anthropic), Groq, and NVIDIA NIM."""
 
 from __future__ import annotations
 
 import json
 import os
 
+import anthropic
 from openai import OpenAI
 
 from llm_eval_forge.judge.rubrics import JudgeVerdict, Rubric
 
 # Preconfigured judge backends
 JUDGE_BACKENDS = {
+    "claude": {
+        "api_key_env": "ANTHROPIC_API_KEY",
+        "default_model": "claude-sonnet-4-6",
+    },
     "groq": {
         "base_url": "https://api.groq.com/openai/v1",
         "api_key_env": "GROQ_API_KEY",
@@ -29,9 +34,10 @@ class LLMJudge:
 
     def __init__(
         self,
-        backend: str = "groq",
+        backend: str = "claude",
         model: str | None = None,
         api_key: str | None = None,
+        max_tokens: int = 1024,
     ):
         if backend not in JUDGE_BACKENDS:
             raise ValueError(f"Unknown judge backend: {backend!r}. Available: {list(JUDGE_BACKENDS)}")
@@ -39,10 +45,13 @@ class LLMJudge:
         cfg = JUDGE_BACKENDS[backend]
         self.model = model or cfg["default_model"]
         self.backend = backend
-        self.client = OpenAI(
-            api_key=api_key or os.environ.get(cfg["api_key_env"], ""),
-            base_url=cfg["base_url"],
-        )
+        self.max_tokens = max_tokens
+
+        api_key = api_key or os.environ.get(cfg["api_key_env"], "")
+        if backend == "claude":
+            self.client = anthropic.Anthropic(api_key=api_key)
+        else:
+            self.client = OpenAI(api_key=api_key, base_url=cfg["base_url"])
 
     def score(
         self,
@@ -56,18 +65,39 @@ class LLMJudge:
         system_prompt = rubric.to_system_prompt()
         user_message = self._format_scoring_request(dimension, prompt, response, context)
 
+        if self.backend == "claude":
+            raw_text = self._score_claude(system_prompt, user_message)
+        else:
+            raw_text = self._score_openai_compat(system_prompt, user_message)
+
+        return self._parse_verdict(dimension, rubric, raw_text)
+
+    def _score_claude(self, system_prompt: str, user_message: str) -> str:
+        # Cache the rubric system prompt — same rubric is reused across every test
+        # case for a given dimension, so this avoids re-billing it each call.
+        result = self.client.messages.create(
+            model=self.model,
+            max_tokens=self.max_tokens,
+            system=[{
+                "type": "text",
+                "text": system_prompt,
+                "cache_control": {"type": "ephemeral"},
+            }],
+            messages=[{"role": "user", "content": user_message}],
+        )
+        return next((b.text for b in result.content if b.type == "text"), "")
+
+    def _score_openai_compat(self, system_prompt: str, user_message: str) -> str:
         result = self.client.chat.completions.create(
             model=self.model,
-            max_tokens=1024,
+            max_tokens=self.max_tokens,
             temperature=0.0,
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_message},
             ],
         )
-
-        raw_text = result.choices[0].message.content or ""
-        return self._parse_verdict(dimension, rubric, raw_text)
+        return result.choices[0].message.content or ""
 
     def _format_scoring_request(
         self,

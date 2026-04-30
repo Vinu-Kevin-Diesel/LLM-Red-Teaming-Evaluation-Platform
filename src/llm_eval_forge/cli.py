@@ -32,7 +32,9 @@ def main():
 @click.option("--output", default=None, help="Output directory override")
 @click.option("--verbose", is_flag=True, help="Verbose logging")
 @click.option("--dry-run", is_flag=True, help="Show plan without executing")
-def run(config_path, provider, dimension, redteam_only, output, verbose, dry_run):
+@click.option("--no-judge", is_flag=True,
+              help="Collect responses only — skip judging. Score later via external judge.")
+def run(config_path, provider, dimension, redteam_only, output, verbose, dry_run, no_judge):
     """Run an evaluation suite."""
     log_level = logging.DEBUG if verbose else logging.INFO
     logging.basicConfig(
@@ -51,7 +53,7 @@ def run(config_path, provider, dimension, redteam_only, output, verbose, dry_run
     if output:
         config.output_dir = output
 
-    runner = EvalRunner(config)
+    runner = EvalRunner(config, no_judge=no_judge)
 
     try:
         results = asyncio.run(runner.run(
