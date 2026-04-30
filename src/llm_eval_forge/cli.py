@@ -89,12 +89,14 @@ def list_providers_cmd():
     table.add_column("Default Models")
 
     from llm_eval_forge.providers.groq import GroqProvider
-    from llm_eval_forge.providers.kimi import KimiProvider
+    from llm_eval_forge.providers.cerebras import CerebrasProvider
+    from llm_eval_forge.providers.mistral import MistralProvider
     from llm_eval_forge.providers.huggingface import HuggingFaceProvider
 
     provider_info = {
         "groq": GroqProvider.DEFAULT_MODELS,
-        "kimi": KimiProvider.DEFAULT_MODELS,
+        "cerebras": CerebrasProvider.DEFAULT_MODELS,
+        "mistral": MistralProvider.DEFAULT_MODELS,
         "huggingface": HuggingFaceProvider.DEFAULT_MODELS,
     }
 
