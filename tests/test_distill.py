@@ -170,3 +170,21 @@ def test_binary_metrics_known_values():
     # pe = (3/8)(3/8) + (5/8)(5/8) = 34/64; kappa = (48/64 - 34/64) / (30/64) = 14/30
     assert m["kappa"] == pytest.approx(14 / 30)
     assert T.binary_metrics([1, 0], [1, 0])["kappa"] == pytest.approx(1.0)
+
+
+def test_parse_message_live_path_and_cost_multiplier():
+    msg = _batch_result(GOOD).message
+    rec = T.parse_message("x", msg)
+    assert rec["status"] == "ok" and rec["policy"] == T.POLICY_VERSION
+    batch_rec = {**rec, "usage": {"input_tokens": 1_000_000, "output_tokens": 0}}
+    live_rec = {**batch_rec, "live": True}
+    assert T.batch_cost([batch_rec], "claude-sonnet-5-5") == pytest.approx(1.0)
+    assert T.batch_cost([live_rec], "claude-sonnet-5-5") == pytest.approx(2.0)
+
+
+def test_batches_for_filters_by_policy(tmp_path):
+    T.log_batch(tmp_path, {"set": "pilot", "batch_id": "old"})  # pre-versioning entries count as v1
+    T.log_batch(tmp_path, {"set": "pilot", "batch_id": "new", "policy": T.POLICY_VERSION})
+    T.log_batch(tmp_path, {"set": "pool", "batch_id": "other", "policy": T.POLICY_VERSION})
+    assert [e["batch_id"] for e in T.batches_for(tmp_path, "pilot")] == ["new"]
+    assert [e["batch_id"] for e in T.batches_for(tmp_path, "pilot", policy="v1")] == ["old"]

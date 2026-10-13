@@ -1,5 +1,7 @@
 # LLM-Red-Teaming-Evaluation-Platform
 
+[![CI](https://github.com/Vinu-Kevin-Diesel/LLM-Red-Teaming-Evaluation-Platform/actions/workflows/ci.yml/badge.svg)](https://github.com/Vinu-Kevin-Diesel/LLM-Red-Teaming-Evaluation-Platform/actions/workflows/ci.yml)
+
 
 Modular LLM evaluation and red-teaming framework that stress-tests language models across hallucination, instruction-following, reasoning consistency, and adversarial robustness using automated judge scoring and mutation-based attacks.
 
