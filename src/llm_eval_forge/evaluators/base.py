@@ -31,6 +31,9 @@ class EvalResult:
     judge_score: Optional[float] = None
     judge_reasoning: Optional[str] = None
     judge_scores_detail: dict = field(default_factory=dict)
+    judge_labels: dict = field(default_factory=dict)
+    judge_model: Optional[str] = None
+    judge_error: Optional[str] = None
     metadata: dict = field(default_factory=dict)
 
 

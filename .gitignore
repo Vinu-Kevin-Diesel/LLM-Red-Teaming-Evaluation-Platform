@@ -21,8 +21,12 @@ env/
 # Environment
 .env
 
-# Results
-results/
+# Results: raw run outputs stay local; generated markdown reports are tracked
+results/*
+!results/*.md
+
+# Datasets and teacher labels (rebuild with `python -m llm_eval_forge.distill.data build`)
+data/
 
 # OS
 .DS_Store

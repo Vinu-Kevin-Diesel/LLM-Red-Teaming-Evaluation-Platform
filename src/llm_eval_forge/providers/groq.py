@@ -2,12 +2,11 @@
 
 from __future__ import annotations
 
-import os
 import time
 
 from openai import AsyncOpenAI
 
-from llm_eval_forge.providers.base import LLMProvider, LLMResponse
+from llm_eval_forge.providers.base import LLMProvider, LLMResponse, resolve_api_key
 from llm_eval_forge.providers.registry import register_provider
 
 
@@ -16,15 +15,15 @@ class GroqProvider(LLMProvider):
     name = "groq"
 
     DEFAULT_MODELS = [
-        "llama-3.3-70b-versatile",
-        "qwen/qwen3-32b",
-        "llama-3.1-8b-instant",
+        "openai/gpt-oss-20b",
+        "openai/gpt-oss-120b",
+        "qwen/qwen3.8-27b",
     ]
 
-    def __init__(self, model: str = "llama-3.3-70b-versatile", api_key: str | None = None):
+    def __init__(self, model: str = "openai/gpt-oss-20b", api_key: str | None = None):
         self.model = model
         self.client = AsyncOpenAI(
-            api_key=api_key or os.environ.get("GROQ_API_KEY", ""),
+            api_key=resolve_api_key(api_key, "GROQ_API_KEY"),
             base_url="https://api.groq.com/openai/v1",
         )
 
