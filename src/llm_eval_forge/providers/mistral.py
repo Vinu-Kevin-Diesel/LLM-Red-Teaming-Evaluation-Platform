@@ -2,12 +2,11 @@
 
 from __future__ import annotations
 
-import os
 import time
 
 from openai import AsyncOpenAI
 
-from llm_eval_forge.providers.base import LLMProvider, LLMResponse
+from llm_eval_forge.providers.base import LLMProvider, LLMResponse, resolve_api_key
 from llm_eval_forge.providers.registry import register_provider
 
 
@@ -15,13 +14,13 @@ from llm_eval_forge.providers.registry import register_provider
 class MistralProvider(LLMProvider):
     name = "mistral"
 
-    DEFAULT_MODELS = ["mistralai/mistral-medium-3.5-128b"]
+    DEFAULT_MODELS = ["mistralai/mistral-large-2-instruct"]
 
-    def __init__(self, model: str = "mistralai/mistral-medium-3.5-128b",
+    def __init__(self, model: str = "mistralai/mistral-large-2-instruct",
                  api_key: str | None = None):
         self.model = model
         self.client = AsyncOpenAI(
-            api_key=api_key or os.environ.get("NVIDIA_API_KEY", ""),
+            api_key=resolve_api_key(api_key, "NVIDIA_API_KEY"),
             base_url="https://integrate.api.nvidia.com/v1",
         )
 

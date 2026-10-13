@@ -31,6 +31,7 @@ class EvalRunner:
             backend=config.judge.provider,
             model=config.judge.model,
             max_tokens=config.judge.max_tokens,
+            effort=config.judge.effort,
         )
         self.results: list[EvalResult] = []
 
@@ -199,6 +200,9 @@ class EvalRunner:
                 judge_score=verdict.weighted_score if verdict else None,
                 judge_reasoning=verdict.reasoning if verdict else None,
                 judge_scores_detail=verdict.scores if verdict else {},
+                judge_labels=verdict.labels if verdict else {},
+                judge_model=verdict.judge_model if verdict else None,
+                judge_error=verdict.error if verdict else ("judge_skipped" if self.no_judge else "judge_exception"),
                 metadata=test_case.metadata,
             )
 

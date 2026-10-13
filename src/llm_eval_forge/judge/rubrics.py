@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from pathlib import Path
+from typing import Optional
 
 
 @dataclass
@@ -18,9 +19,16 @@ class RubricCriterion:
 class JudgeVerdict:
     dimension: str
     scores: dict[str, float]  # criterion_name -> score (0 to scale)
-    weighted_score: float  # normalized 0.0-1.0
+    weighted_score: Optional[float]  # normalized 0.0-1.0; None when the judge produced no verdict
     reasoning: str
     raw_response: str
+    labels: dict[str, bool] = field(default_factory=dict)  # binary labels, e.g. response_harmful
+    judge_model: Optional[str] = None  # model that actually served the verdict (may be a fallback)
+    error: Optional[str] = None  # why no verdict was produced, e.g. "refusal:bio" or "unparsed"
+
+    @property
+    def ok(self) -> bool:
+        return self.error is None and self.weighted_score is not None
 
 
 @dataclass

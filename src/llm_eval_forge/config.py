@@ -24,9 +24,10 @@ class ProviderConfig:
 
 @dataclass
 class JudgeConfig:
-    provider: str = "groq"
-    model: str = "llama-3.3-70b-versatile"
-    max_tokens: int = 1024
+    provider: str = "claude"
+    model: str = "claude-sonnet-5-5"
+    max_tokens: int = 4096  # Claude counts thinking toward max_tokens, so leave headroom
+    effort: str | None = "low"  # Claude only: low | medium | high | xhigh | max
 
 
 @dataclass
@@ -93,8 +94,9 @@ def load_config(path: str | Path) -> EvalConfig:
     judge_raw = raw.get("judge", {})
     config.judge = JudgeConfig(
         provider=judge_raw.get("provider", "claude"),
-        model=judge_raw.get("model", "claude-sonnet-4-20250514"),
-        max_tokens=judge_raw.get("max_tokens", 1024),
+        model=judge_raw.get("model", "claude-sonnet-5-5"),
+        max_tokens=judge_raw.get("max_tokens", 4096),
+        effort=judge_raw.get("effort", "low"),
     )
 
     # Dimensions

@@ -2,12 +2,11 @@
 
 from __future__ import annotations
 
-import os
 import time
 
 from openai import AsyncOpenAI
 
-from llm_eval_forge.providers.base import LLMProvider, LLMResponse
+from llm_eval_forge.providers.base import LLMProvider, LLMResponse, resolve_api_key
 from llm_eval_forge.providers.registry import register_provider
 
 
@@ -16,13 +15,14 @@ class CerebrasProvider(LLMProvider):
     name = "cerebras"
 
     DEFAULT_MODELS = [
-        "llama3.1-8b",
+        "gpt-oss-120b",
+        "qwen-3.8-27b",
     ]
 
-    def __init__(self, model: str = "llama3.1-8b", api_key: str | None = None):
+    def __init__(self, model: str = "gpt-oss-120b", api_key: str | None = None):
         self.model = model
         self.client = AsyncOpenAI(
-            api_key=api_key or os.environ.get("CEREBRAS_API_KEY", ""),
+            api_key=resolve_api_key(api_key, "CEREBRAS_API_KEY"),
             base_url="https://api.cerebras.ai/v1",
         )
 

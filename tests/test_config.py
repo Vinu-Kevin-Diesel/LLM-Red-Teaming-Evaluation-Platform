@@ -18,7 +18,7 @@ def _write_config(tmp_path: Path, data: dict) -> Path:
 
 def test_load_minimal_config(tmp_path):
     data = {
-        "providers": [{"name": "groq", "models": ["llama-3.3-70b-versatile"]}],
+        "providers": [{"name": "groq", "models": ["openai/gpt-oss-20b"]}],
         "dimensions": [{"name": "hallucination"}],
     }
     config = load_config(_write_config(tmp_path, data))
@@ -31,10 +31,10 @@ def test_load_full_config(tmp_path):
     data = {
         "eval": {"name": "test-run", "output_dir": "./test-results"},
         "providers": [
-            {"name": "groq", "models": ["llama-3.3-70b-versatile"], "temperature": 0.0},
-            {"name": "kimi", "models": ["kimi-k2.5"]},
+            {"name": "groq", "models": ["openai/gpt-oss-20b"], "temperature": 0.0},
+            {"name": "cerebras", "models": ["gpt-oss-120b"]},
         ],
-        "judge": {"provider": "groq", "model": "llama-3.3-70b-versatile"},
+        "judge": {"provider": "groq", "model": "openai/gpt-oss-20b"},
         "dimensions": [
             {
                 "name": "hallucination",
@@ -86,3 +86,13 @@ def test_empty_config(tmp_path):
     path.write_text("")
     with pytest.raises(ValueError, match="Empty config"):
         load_config(path)
+
+
+def test_default_config_uses_live_models_and_claude_judge():
+    config = load_config(Path(__file__).resolve().parent.parent / "config" / "default.yaml")
+    models = {m for p in config.providers for m in p.models}
+    assert "qwen/qwen3-32b" not in models and "llama3.1-8b" not in models
+    assert config.judge.provider == "claude"
+    assert config.judge.model == "claude-sonnet-5-5"
+    assert config.judge.effort == "low"
+    assert config.judge.max_tokens >= 2048  # thinking counts toward max_tokens
