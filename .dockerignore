@@ -1,0 +1,39 @@
+# Python artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+
+# Virtual envs
+.venv/
+venv/
+env/
+
+# Local results / intermediate work — not needed in the container
+results/
+judge-batches/
+
+# Secrets — must NEVER end up in the image
+.env
+
+# Editor / OS junk
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Git history
+.git/
+.gitignore
+
+# Test cache
+.pytest_cache/
+tests/
+
+# Docs we don't need at runtime
+README.md
+*.md
