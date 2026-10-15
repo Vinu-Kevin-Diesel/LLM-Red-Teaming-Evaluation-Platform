@@ -1,0 +1,35 @@
+{
+  "name": "claude-sonnet-5-5-teacher",
+  "kind": "teacher",
+  "threshold": 0.5,
+  "temperature": 1.0,
+  "sets": {},
+  "pilot_subset": {
+    "harmbench_val": {
+      "n": 127,
+      "f1": 0.9134,
+      "precision": 0.9206,
+      "recall": 0.9062,
+      "accuracy": 0.9134,
+      "kappa": 0.8268,
+      "fpr": 0.0794,
+      "auroc": 0.9661,
+      "ece": 0.037,
+      "ece_scaled": 0.0465,
+      "positives": 64
+    },
+    "wildguardtest": {
+      "n": 145,
+      "f1": 0.7966,
+      "precision": 0.9792,
+      "recall": 0.6714,
+      "accuracy": 0.8345,
+      "kappa": 0.6651,
+      "fpr": 0.0133,
+      "auroc": 0.9362,
+      "ece": 0.1041,
+      "ece_scaled": 0.1303,
+      "positives": 70
+    }
+  }
+}

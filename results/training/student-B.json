@@ -1,0 +1,224 @@
+{
+  "config": {
+    "stage": "B",
+    "out": "models/student-B",
+    "init": "answerdotai/ModernBERT-base",
+    "data": "data",
+    "epochs": 3.0,
+    "lr": 2e-05,
+    "weight_decay": 0.01,
+    "warmup": 0.1,
+    "max_len": 1536,
+    "tokens_per_batch": 6144,
+    "max_batch_size": 32,
+    "evals_per_epoch": 4,
+    "seed": 13,
+    "limit": null,
+    "vram_fraction": 0.85
+  },
+  "examples": 5128,
+  "steps": 1026,
+  "train_seconds": 251.6,
+  "tokens_per_second": 22493,
+  "peak_vram_gib": 6.02,
+  "peak_reserved_gib": 7.55,
+  "best_val_auroc": 0.9186,
+  "history": [
+    {
+      "step": 85,
+      "val_loss": 0.521,
+      "val_auroc": 0.7783,
+      "gold_auroc": 0.773,
+      "selected_on": "teacher_val",
+      "val_f1": 0.6077,
+      "threshold": 0.25,
+      "auroc_by_source": {
+        "aegis2_val": 0.6414,
+        "teacher_val": 0.7783,
+        "wildguardtrain": 0.8331
+      }
+    },
+    {
+      "step": 170,
+      "val_loss": 0.633,
+      "val_auroc": 0.8505,
+      "gold_auroc": 0.8578,
+      "selected_on": "teacher_val",
+      "val_f1": 0.6782,
+      "threshold": 0.05,
+      "auroc_by_source": {
+        "aegis2_val": 0.7361,
+        "teacher_val": 0.8505,
+        "wildguardtrain": 0.9042
+      }
+    },
+    {
+      "step": 255,
+      "val_loss": 0.461,
+      "val_auroc": 0.8478,
+      "gold_auroc": 0.8328,
+      "selected_on": "teacher_val",
+      "val_f1": 0.668,
+      "threshold": 0.33,
+      "auroc_by_source": {
+        "aegis2_val": 0.7904,
+        "teacher_val": 0.8478,
+        "wildguardtrain": 0.8896
+      }
+    },
+    {
+      "step": 340,
+      "val_loss": 0.3743,
+      "val_auroc": 0.8743,
+      "gold_auroc": 0.9019,
+      "selected_on": "teacher_val",
+      "val_f1": 0.7433,
+      "threshold": 0.24,
+      "auroc_by_source": {
+        "aegis2_val": 0.8424,
+        "teacher_val": 0.8743,
+        "wildguardtrain": 0.923
+      }
+    },
+    {
+      "step": 425,
+      "val_loss": 0.4396,
+      "val_auroc": 0.8915,
+      "gold_auroc": 0.8933,
+      "selected_on": "teacher_val",
+      "val_f1": 0.7338,
+      "threshold": 0.13,
+      "auroc_by_source": {
+        "aegis2_val": 0.8106,
+        "teacher_val": 0.8915,
+        "wildguardtrain": 0.9338
+      }
+    },
+    {
+      "step": 510,
+      "val_loss": 0.3319,
+      "val_auroc": 0.9052,
+      "gold_auroc": 0.9199,
+      "selected_on": "teacher_val",
+      "val_f1": 0.7803,
+      "threshold": 0.41,
+      "auroc_by_source": {
+        "aegis2_val": 0.8542,
+        "teacher_val": 0.9052,
+        "wildguardtrain": 0.9442
+      }
+    },
+    {
+      "step": 595,
+      "val_loss": 0.3636,
+      "val_auroc": 0.9127,
+      "gold_auroc": 0.9091,
+      "selected_on": "teacher_val",
+      "val_f1": 0.761,
+      "threshold": 0.21,
+      "auroc_by_source": {
+        "aegis2_val": 0.8404,
+        "teacher_val": 0.9127,
+        "wildguardtrain": 0.9401
+      }
+    },
+    {
+      "step": 680,
+      "val_loss": 0.371,
+      "val_auroc": 0.905,
+      "gold_auroc": 0.9165,
+      "selected_on": "teacher_val",
+      "val_f1": 0.7752,
+      "threshold": 0.23,
+      "auroc_by_source": {
+        "aegis2_val": 0.8353,
+        "teacher_val": 0.905,
+        "wildguardtrain": 0.9448
+      }
+    },
+    {
+      "step": 765,
+      "val_loss": 0.338,
+      "val_auroc": 0.9059,
+      "gold_auroc": 0.9174,
+      "selected_on": "teacher_val",
+      "val_f1": 0.7731,
+      "threshold": 0.26,
+      "auroc_by_source": {
+        "aegis2_val": 0.848,
+        "teacher_val": 0.9059,
+        "wildguardtrain": 0.9495
+      }
+    },
+    {
+      "step": 850,
+      "val_loss": 0.3585,
+      "val_auroc": 0.9156,
+      "gold_auroc": 0.9181,
+      "selected_on": "teacher_val",
+      "val_f1": 0.7684,
+      "threshold": 0.18,
+      "auroc_by_source": {
+        "aegis2_val": 0.8432,
+        "teacher_val": 0.9156,
+        "wildguardtrain": 0.9504
+      }
+    },
+    {
+      "step": 935,
+      "val_loss": 0.3544,
+      "val_auroc": 0.9165,
+      "gold_auroc": 0.9202,
+      "selected_on": "teacher_val",
+      "val_f1": 0.777,
+      "threshold": 0.19,
+      "auroc_by_source": {
+        "aegis2_val": 0.8539,
+        "teacher_val": 0.9165,
+        "wildguardtrain": 0.9539
+      }
+    },
+    {
+      "step": 1020,
+      "val_loss": 0.349,
+      "val_auroc": 0.9183,
+      "gold_auroc": 0.9214,
+      "selected_on": "teacher_val",
+      "val_f1": 0.7819,
+      "threshold": 0.19,
+      "auroc_by_source": {
+        "aegis2_val": 0.8512,
+        "teacher_val": 0.9183,
+        "wildguardtrain": 0.9536
+      }
+    },
+    {
+      "step": 1026,
+      "val_loss": 0.3493,
+      "val_auroc": 0.9186,
+      "gold_auroc": 0.9215,
+      "selected_on": "teacher_val",
+      "val_f1": 0.7828,
+      "threshold": 0.19,
+      "auroc_by_source": {
+        "aegis2_val": 0.8512,
+        "teacher_val": 0.9186,
+        "wildguardtrain": 0.9539
+      }
+    }
+  ],
+  "best": {
+    "step": 1026,
+    "val_loss": 0.3493,
+    "val_auroc": 0.9186,
+    "gold_auroc": 0.9215,
+    "selected_on": "teacher_val",
+    "val_f1": 0.7828,
+    "threshold": 0.19,
+    "auroc_by_source": {
+      "aegis2_val": 0.8512,
+      "teacher_val": 0.9186,
+      "wildguardtrain": 0.9539
+    }
+  }
+}

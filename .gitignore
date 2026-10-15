@@ -24,6 +24,8 @@ env/
 # Results: raw run outputs stay local; generated markdown reports are tracked
 results/*
 !results/*.md
+!results/metrics/
+!results/training/
 
 # Datasets and teacher labels (rebuild with `python -m llm_eval_forge.distill.data build`)
 data/
@@ -32,3 +34,7 @@ data/
 .DS_Store
 Thumbs.db
 judge-batches/
+
+# Trained checkpoints (published to the HF Hub, not git)
+models/
+logs/

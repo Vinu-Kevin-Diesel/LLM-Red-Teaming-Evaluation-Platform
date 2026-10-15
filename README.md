@@ -184,6 +184,29 @@ pip install -e ".[dev,ml]"
 
    Then run the same three commands with `pool` in place of `pilot` for the distillation pool.
 
+3. **Train the student.** This is a ModernBERT-base classifier (149M params) trained in two stages:
+   - Stage A learns from public labels.
+   - Stage B distills the Claude teacher's verdicts, using the teacher's confidence as a soft target.
+
+   ```bash
+   python -m llm_eval_forge.distill.train --stage A --out models/student-A
+   python -m llm_eval_forge.distill.train --stage B --init models/student-A --out models/student-AB
+   ```
+
+4. **Evaluate and build the comparison table.**
+
+   ```bash
+   python -m llm_eval_forge.distill.evaluate run --model models/student-AB
+   python -m llm_eval_forge.distill.evaluate run --baseline qwen3guard-0.6b
+   python -m llm_eval_forge.distill.evaluate run --baseline granite-guardian-3.2-3b
+   python -m llm_eval_forge.distill.evaluate teacher
+   python -m llm_eval_forge.distill.evaluate table
+   ```
+
+   The commands evaluate the student and the two guard baselines, score Claude on its pilot rows, then write `results/benchmark_table.md`.
+
+   Baseline guards are scored from the probability of their first verdict token, in one batched forward pass.
+
 ## Testing
 
 ```bash
