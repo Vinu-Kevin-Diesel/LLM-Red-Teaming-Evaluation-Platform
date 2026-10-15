@@ -11,7 +11,8 @@ dependencies = [
     "pyyaml>=6.0",
     "python-dotenv>=1.0",
     "openai>=1.0",
-    "anthropic>=0.39",
+    "anthropic>=0.94",
+    "pydantic>=2.0",
     "huggingface-hub>=0.25",
     "httpx>=0.27",
     "rich>=13.0",
@@ -23,6 +24,17 @@ llm-eval-forge = "llm_eval_forge.cli:main"
 
 [project.optional-dependencies]
 dev = ["pytest>=8.0", "pytest-asyncio>=0.24"]
+# Distillation, training and serving of the small judge (install torch from the CUDA index first)
+ml = [
+    "datasets>=3.0",
+    "torch>=2.7",
+    "transformers>=4.51,<5",
+    "tokenizers>=0.21",
+    "peft>=0.13",
+    "scikit-learn>=1.5",
+    "onnx>=1.16",
+    "onnxruntime>=1.19",
+]
 
 [tool.setuptools.packages.find]
 where = ["src"]

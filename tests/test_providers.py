@@ -9,20 +9,25 @@ import pytest
 def test_list_providers():
     providers = list_providers()
     assert "groq" in providers
-    assert "kimi" in providers
+    assert "cerebras" in providers
+    assert "mistral" in providers
     assert "huggingface" in providers
+    assert "kimi" not in providers  # removed in favour of Cerebras
 
 
 def test_get_groq_provider():
-    provider = get_provider("groq", model="llama-3.3-70b-versatile")
+    provider = get_provider("groq", model="qwen/qwen3.8-27b")
     assert provider.name == "groq"
-    assert provider.model == "llama-3.3-70b-versatile"
+    assert provider.model == "qwen/qwen3.8-27b"
 
 
-def test_get_kimi_provider():
-    provider = get_provider("kimi", model="moonshotai/kimi-k2-5")
-    assert provider.name == "kimi"
-    assert provider.model == "moonshotai/kimi-k2-5"
+def test_provider_defaults_are_live_models():
+    # Retired upstream in 2026: qwen/qwen3-32b, llama-3.x on Groq; llama3.1-8b on Cerebras.
+    retired = {"qwen/qwen3-32b", "llama-3.3-70b-versatile", "llama-3.1-8b-instant", "llama3.1-8b"}
+    for name in ("groq", "cerebras"):
+        provider = get_provider(name)
+        assert provider.model not in retired
+        assert not retired & set(provider.DEFAULT_MODELS)
 
 
 def test_get_huggingface_provider():
