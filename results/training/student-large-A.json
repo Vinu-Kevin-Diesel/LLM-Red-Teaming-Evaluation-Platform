@@ -1,0 +1,107 @@
+{
+  "config": {
+    "stage": "A",
+    "out": "models/student-large-A",
+    "init": "answerdotai/ModernBERT-large",
+    "data": "data",
+    "epochs": 1.0,
+    "lr": 2e-05,
+    "weight_decay": 0.01,
+    "warmup": 0.1,
+    "max_len": 1536,
+    "tokens_per_batch": 8192,
+    "max_batch_size": 32,
+    "evals_per_epoch": 4,
+    "seed": 13,
+    "limit": null,
+    "vram_fraction": 0.85,
+    "grad_ckpt": true
+  },
+  "examples": 45219,
+  "steps": 2535,
+  "train_seconds": 1743.2,
+  "tokens_per_second": 10284,
+  "peak_vram_gib": 7.49,
+  "peak_reserved_gib": 8.8,
+  "best_val_auroc": 0.9752518361084561,
+  "history": [
+    {
+      "step": 633,
+      "val_loss": 0.3735,
+      "val_auroc": 0.9566,
+      "gold_auroc": 0.9566,
+      "selected_on": "gold",
+      "val_f1": 0.847,
+      "threshold": 0.09,
+      "auroc_by_source": {
+        "aegis2_val": 0.9139,
+        "wildguardtrain": 0.9757
+      }
+    },
+    {
+      "step": 1266,
+      "val_loss": 0.2409,
+      "val_auroc": 0.9668,
+      "gold_auroc": 0.9668,
+      "selected_on": "gold",
+      "val_f1": 0.8596,
+      "threshold": 0.2,
+      "auroc_by_source": {
+        "aegis2_val": 0.9303,
+        "wildguardtrain": 0.9842
+      }
+    },
+    {
+      "step": 1899,
+      "val_loss": 0.1988,
+      "val_auroc": 0.9735,
+      "gold_auroc": 0.9735,
+      "selected_on": "gold",
+      "val_f1": 0.8734,
+      "threshold": 0.43,
+      "auroc_by_source": {
+        "aegis2_val": 0.9389,
+        "wildguardtrain": 0.988
+      }
+    },
+    {
+      "step": 2532,
+      "val_loss": 0.1942,
+      "val_auroc": 0.9753,
+      "gold_auroc": 0.9753,
+      "selected_on": "gold",
+      "val_f1": 0.8793,
+      "threshold": 0.42,
+      "auroc_by_source": {
+        "aegis2_val": 0.9462,
+        "wildguardtrain": 0.9891
+      }
+    },
+    {
+      "step": 2535,
+      "val_loss": 0.1944,
+      "val_auroc": 0.9752,
+      "gold_auroc": 0.9752,
+      "selected_on": "gold",
+      "val_f1": 0.8782,
+      "threshold": 0.41,
+      "auroc_by_source": {
+        "aegis2_val": 0.9458,
+        "wildguardtrain": 0.9892
+      }
+    }
+  ],
+  "best": {
+    "step": 2532,
+    "val_loss": 0.1942,
+    "val_auroc": 0.9753,
+    "gold_auroc": 0.9753,
+    "selected_on": "gold",
+    "val_f1": 0.8793,
+    "threshold": 0.42,
+    "auroc_by_source": {
+      "aegis2_val": 0.9462,
+      "wildguardtrain": 0.9891
+    }
+  }
+}

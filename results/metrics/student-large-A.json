@@ -1,0 +1,173 @@
+{
+  "name": "student-large-A",
+  "kind": "student",
+  "threshold": 0.42,
+  "teacher_threshold": 0.46,
+  "temperature": 1.3,
+  "sets": {
+    "aegis2_test": {
+      "n": 813,
+      "f1": 0.8532,
+      "precision": 0.8437,
+      "recall": 0.8629,
+      "accuracy": 0.8561,
+      "kappa": 0.7121,
+      "fpr": 0.1504,
+      "auroc": 0.9307,
+      "ece": 0.035,
+      "ece_scaled": 0.0233,
+      "positives": 394
+    },
+    "beavertails_test": {
+      "n": 3021,
+      "f1": 0.7682,
+      "precision": 0.8861,
+      "recall": 0.678,
+      "accuracy": 0.7653,
+      "kappa": 0.5389,
+      "fpr": 0.1172,
+      "auroc": 0.859,
+      "ece": 0.1387,
+      "ece_scaled": 0.1082,
+      "positives": 1733
+    },
+    "harmbench_val": {
+      "n": 602,
+      "f1": 0.8478,
+      "precision": 0.7663,
+      "recall": 0.9487,
+      "accuracy": 0.8455,
+      "kappa": 0.6945,
+      "fpr": 0.2401,
+      "auroc": 0.9211,
+      "ece": 0.1,
+      "ece_scaled": 0.0873,
+      "positives": 273
+    },
+    "jbb_judge": {
+      "n": 300,
+      "f1": 0.8512,
+      "precision": 0.7803,
+      "recall": 0.9364,
+      "accuracy": 0.88,
+      "kappa": 0.7521,
+      "fpr": 0.1526,
+      "auroc": 0.9489,
+      "ece": 0.098,
+      "ece_scaled": 0.0835,
+      "positives": 110
+    },
+    "saferlhf_test": {
+      "n": 2000,
+      "f1": 0.5091,
+      "precision": 0.6511,
+      "recall": 0.418,
+      "accuracy": 0.597,
+      "kappa": 0.194,
+      "fpr": 0.224,
+      "auroc": 0.6301,
+      "ece": 0.2756,
+      "ece_scaled": 0.2413,
+      "positives": 1000
+    },
+    "wildguardtest": {
+      "n": 1709,
+      "f1": 0.764,
+      "precision": 0.7823,
+      "recall": 0.7465,
+      "accuracy": 0.9233,
+      "kappa": 0.7182,
+      "fpr": 0.0414,
+      "auroc": 0.9473,
+      "ece": 0.0521,
+      "ece_scaled": 0.0424,
+      "positives": 284
+    },
+    "val": {
+      "n": 1210,
+      "f1": 0.8793,
+      "precision": 0.8628,
+      "recall": 0.8964,
+      "accuracy": 0.9215,
+      "kappa": 0.8211,
+      "fpr": 0.0667,
+      "auroc": 0.9752,
+      "ece": 0.0226,
+      "ece_scaled": 0.0143,
+      "positives": 386
+    },
+    "teacher_val": {
+      "n": 269,
+      "f1": 0.8175,
+      "precision": 0.7357,
+      "recall": 0.9196,
+      "accuracy": 0.829,
+      "kappa": 0.6603,
+      "fpr": 0.2357,
+      "auroc": 0.9126,
+      "ece": 0.1085,
+      "ece_scaled": 0.0871,
+      "positives": 112
+    },
+    "teacher_test": {
+      "n": 283,
+      "f1": 0.7531,
+      "precision": 0.6767,
+      "recall": 0.8491,
+      "accuracy": 0.7915,
+      "kappa": 0.5767,
+      "fpr": 0.2429,
+      "auroc": 0.8912,
+      "ece": 0.1274,
+      "ece_scaled": 0.1125,
+      "positives": 106
+    }
+  },
+  "pilot_subset": {
+    "harmbench_val": {
+      "n": 127,
+      "f1": 0.8921,
+      "precision": 0.8267,
+      "recall": 0.9688,
+      "accuracy": 0.8819,
+      "kappa": 0.7634,
+      "fpr": 0.2063,
+      "auroc": 0.9457,
+      "ece": 0.0741,
+      "ece_scaled": 0.0706,
+      "positives": 64
+    },
+    "wildguardtest": {
+      "n": 145,
+      "f1": 0.7969,
+      "precision": 0.8793,
+      "recall": 0.7286,
+      "accuracy": 0.8207,
+      "kappa": 0.6389,
+      "fpr": 0.0933,
+      "auroc": 0.925,
+      "ece": 0.1489,
+      "ece_scaled": 0.1399,
+      "positives": 70
+    }
+  },
+  "avg_response_f1": 0.7485,
+  "avg_over": [
+    "wildguardtest",
+    "harmbench_val",
+    "beavertails_test",
+    "saferlhf_test",
+    "aegis2_test"
+  ],
+  "seconds": {
+    "aegis2_test": 9.1,
+    "beavertails_test": 5.5,
+    "harmbench_val": 7.9,
+    "jbb_judge": 1.9,
+    "saferlhf_test": 3.5,
+    "wildguardtest": 17.5,
+    "val": 9.6,
+    "teacher_val": 3.0,
+    "teacher_test": 3.1
+  }
+}
