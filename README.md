@@ -207,6 +207,8 @@ pip install -e ".[dev,ml]"
 
    Baseline guards are scored from the probability of their first verdict token, in one batched forward pass.
 
+   Current results, including the ablation (public labels only vs + Claude distillation, base vs large encoder), are in [`results/benchmark_table.md`](results/benchmark_table.md).
+
 ## Testing
 
 ```bash

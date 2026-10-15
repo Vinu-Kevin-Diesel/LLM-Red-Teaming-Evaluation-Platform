@@ -5,6 +5,8 @@ F1 (%) with harmful = positive. Students use the threshold tuned on the gold val
 | Judge | WGTest | HarmB | BeaverT | SafeRLHF | Aegis2 | Avg F1 | JBB (jailbroken) | κ vs teacher | Avg AUROC | Avg ECE (scaled) |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | qwen3guard-0.6b | 77.0 | 85.2 | 86.4 | 67.7 | 84.3 | 80.1 | 82.8 | 0.523 | 89.4 | 0.065 |
+| **student-large-AB** | 73.4 | 81.4 | 80.5 | 64.7 | 80.3 | 76.1 | 81.6 | 0.696 | 85.4 | 0.084 |
+| **student-large-A** | 76.4 | 84.8 | 76.8 | 50.9 | 85.3 | 74.9 | 85.1 | 0.577 | 85.8 | 0.100 |
 | **student-A** | 74.0 | 84.1 | 75.1 | 53.4 | 84.8 | 74.3 | 83.8 | 0.570 | 85.2 | 0.114 |
 | granite-guardian-3.2-3b | 69.6 | 82.5 | 80.7 | 59.0 | 75.4 | 73.4 | 82.6 | 0.554 | 85.4 | 0.084 |
 | **student-AB** | 69.9 | 80.1 | 76.8 | 58.2 | 78.5 | 72.7 | 81.0 | 0.626 | 83.7 | 0.111 |
@@ -25,6 +27,8 @@ Claude only labeled a 300-row human-gold pilot (balanced), so every judge is re-
 | student-A | 90.0 | 81.5 | 0.779 | 0.667 |
 | student-AB | 86.9 | 84.1 | 0.700 | 0.696 |
 | student-B | 80.6 | 80.9 | 0.574 | 0.640 |
+| student-large-A | 89.2 | 79.7 | 0.763 | 0.639 |
+| student-large-AB | 86.7 | 83.2 | 0.700 | 0.682 |
 
 Rows per set: WGTest 1,709, HarmB 602, BeaverT 3,021, SafeRLHF 2,000, Aegis2 813, JBB (jailbroken) 300, κ vs teacher 283
 
