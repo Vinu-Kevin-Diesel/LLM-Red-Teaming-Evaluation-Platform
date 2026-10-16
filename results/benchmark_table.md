@@ -10,6 +10,7 @@ F1 (%) with harmful = positive. Students use the threshold tuned on the gold val
 | **student-A** | 74.0 | 84.1 | 75.1 | 53.4 | 84.8 | 74.3 | 83.8 | 0.570 | 85.2 | 0.114 |
 | granite-guardian-3.2-3b | 69.6 | 82.5 | 80.7 | 59.0 | 75.4 | 73.4 | 82.6 | 0.554 | 85.4 | 0.084 |
 | **student-AB** | 69.9 | 80.1 | 76.8 | 58.2 | 78.5 | 72.7 | 81.0 | 0.626 | 83.7 | 0.111 |
+| **student-AB-onnx-int8** | 70.6 | 80.4 | 74.1 | 55.8 | 77.4 | 71.7 | 81.6 | 0.626 | 83.3 | 0.113 |
 | **student-B** | 61.5 | 74.1 | 76.7 | 61.4 | 74.8 | 69.7 | 67.6 | 0.584 | 80.4 | 0.084 |
 | Qwen3Guard-Gen-0.6B (published) | 76.3 | 85.0 | 86.1 | 66.6 | 84.2 | 79.6 | – | – | – | – |
 | WildGuard-7B (published) | 75.4 | 86.3 | 84.4 | 64.2 | 83.2 | 78.7 | – | – | – | – |
@@ -25,6 +26,7 @@ Claude only labeled a 300-row human-gold pilot (balanced), so every judge is re-
 | granite-guardian-3.2-3b | 89.9 | 73.4 | 0.795 | 0.528 |
 | qwen3guard-0.6b | 92.5 | 84.1 | 0.842 | 0.696 |
 | student-A | 90.0 | 81.5 | 0.779 | 0.667 |
+| student-AB-onnx-int8 | 87.5 | 82.3 | 0.716 | 0.668 |
 | student-AB | 86.9 | 84.1 | 0.700 | 0.696 |
 | student-B | 80.6 | 80.9 | 0.574 | 0.640 |
 | student-large-A | 89.2 | 79.7 | 0.763 | 0.639 |

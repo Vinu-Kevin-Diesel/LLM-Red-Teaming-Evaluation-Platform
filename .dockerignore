@@ -37,3 +37,12 @@ tests/
 # Docs we don't need at runtime
 README.md
 *.md
+
+# Large local data: never part of an image (the serving image copies one artifact explicitly)
+data/
+models/
+logs/
+plan_checks/
+PLAN.md
+artifacts/**/model.onnx
+artifacts/**/*.onnx.data

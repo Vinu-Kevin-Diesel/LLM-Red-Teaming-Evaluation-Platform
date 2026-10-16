@@ -1,0 +1,663 @@
+{
+  "runtimes": {
+    "student-large-AB \u00b7 torch bf16 \u00b7 GPU": {
+      "kind": "torch-cuda",
+      "model_dir": "models/student-large-AB",
+      "device": "gpu",
+      "gpu_util_before": 5,
+      "by_length": {
+        "128": {
+          "tokens": 128,
+          "n": 200,
+          "p50": 18.0,
+          "p95": 18.75,
+          "p99": 20.2,
+          "mean": 18.12
+        },
+        "512": {
+          "tokens": 512,
+          "n": 200,
+          "p50": 20.09,
+          "p95": 26.69,
+          "p99": 30.39,
+          "mean": 20.54
+        },
+        "1024": {
+          "tokens": 1024,
+          "n": 200,
+          "p50": 26.54,
+          "p95": 27.72,
+          "p99": 31.6,
+          "mean": 26.78
+        },
+        "2048": {
+          "tokens": 2048,
+          "n": 200,
+          "p50": 55.9,
+          "p95": 58.24,
+          "p99": 60.3,
+          "mean": 56.04
+        }
+      }
+    },
+    "student-AB \u00b7 torch bf16 \u00b7 GPU": {
+      "kind": "torch-cuda",
+      "model_dir": "models/student-AB",
+      "device": "gpu",
+      "gpu_util_before": 0,
+      "by_length": {
+        "128": {
+          "tokens": 128,
+          "n": 200,
+          "p50": 14.19,
+          "p95": 14.97,
+          "p99": 15.41,
+          "mean": 14.32
+        },
+        "512": {
+          "tokens": 512,
+          "n": 200,
+          "p50": 15.94,
+          "p95": 20.06,
+          "p99": 22.97,
+          "mean": 16.39
+        },
+        "1024": {
+          "tokens": 1024,
+          "n": 200,
+          "p50": 16.54,
+          "p95": 21.06,
+          "p99": 26.07,
+          "mean": 17.16
+        },
+        "2048": {
+          "tokens": 2048,
+          "n": 200,
+          "p50": 29.19,
+          "p95": 30.73,
+          "p99": 31.31,
+          "mean": 29.5
+        }
+      }
+    },
+    "student-AB \u00b7 ONNX INT8 \u00b7 CPU": {
+      "kind": "onnx-int8",
+      "model_dir": "artifacts/student-AB",
+      "device": "cpu",
+      "gpu_util_before": null,
+      "by_length": {
+        "128": {
+          "tokens": 128,
+          "n": 30,
+          "p50": 29.38,
+          "p95": 32.91,
+          "p99": 33.13,
+          "mean": 28.89
+        },
+        "512": {
+          "tokens": 512,
+          "n": 30,
+          "p50": 122.89,
+          "p95": 136.08,
+          "p99": 138.1,
+          "mean": 122.77
+        },
+        "1024": {
+          "tokens": 1024,
+          "n": 30,
+          "p50": 377.71,
+          "p95": 390.87,
+          "p99": 391.91,
+          "mean": 375.61
+        },
+        "2048": {
+          "tokens": 2048,
+          "n": 30,
+          "p50": 1381.06,
+          "p95": 1467.26,
+          "p99": 1520.07,
+          "mean": 1387.72
+        }
+      }
+    },
+    "student-AB \u00b7 ONNX fp32 \u00b7 CPU": {
+      "kind": "onnx-fp32",
+      "model_dir": "artifacts/student-AB",
+      "device": "cpu",
+      "gpu_util_before": null,
+      "by_length": {
+        "128": {
+          "tokens": 128,
+          "n": 30,
+          "p50": 62.59,
+          "p95": 65.02,
+          "p99": 65.81,
+          "mean": 61.38
+        },
+        "512": {
+          "tokens": 512,
+          "n": 30,
+          "p50": 246.15,
+          "p95": 255.7,
+          "p99": 258.36,
+          "mean": 239.09
+        },
+        "1024": {
+          "tokens": 1024,
+          "n": 30,
+          "p50": 554.67,
+          "p95": 617.73,
+          "p99": 643.47,
+          "mean": 559.41
+        },
+        "2048": {
+          "tokens": 2048,
+          "n": 30,
+          "p50": 1800.49,
+          "p95": 1898.36,
+          "p99": 1955.9,
+          "mean": 1812.17
+        }
+      }
+    },
+    "student-large-AB \u00b7 ONNX INT8 \u00b7 CPU": {
+      "kind": "onnx-int8",
+      "model_dir": "artifacts/student-large-AB",
+      "device": "cpu",
+      "gpu_util_before": null,
+      "by_length": {
+        "128": {
+          "tokens": 128,
+          "n": 30,
+          "p50": 75.86,
+          "p95": 89.22,
+          "p99": 89.9,
+          "mean": 75.51
+        },
+        "512": {
+          "tokens": 512,
+          "n": 30,
+          "p50": 301.14,
+          "p95": 323.26,
+          "p99": 330.7,
+          "mean": 297.66
+        },
+        "1024": {
+          "tokens": 1024,
+          "n": 30,
+          "p50": 885.12,
+          "p95": 927.82,
+          "p99": 933.6,
+          "mean": 888.49
+        },
+        "2048": {
+          "tokens": 2048,
+          "n": 30,
+          "p50": 2833.6,
+          "p95": 3041.16,
+          "p99": 3068.11,
+          "mean": 2868.36
+        }
+      }
+    },
+    "Qwen3Guard-Gen-0.6B \u00b7 bf16 \u00b7 GPU": {
+      "kind": "guard",
+      "device": "gpu",
+      "gpu_util_before": 0,
+      "by_length": {
+        "128": {
+          "n": 50,
+          "p50": 37.04,
+          "p95": 37.73,
+          "p99": 37.75,
+          "mean": 37.04
+        },
+        "512": {
+          "n": 50,
+          "p50": 80.01,
+          "p95": 80.76,
+          "p99": 80.85,
+          "mean": 80.0
+        },
+        "1024": {
+          "n": 50,
+          "p50": 154.67,
+          "p95": 156.48,
+          "p99": 156.82,
+          "mean": 154.9
+        },
+        "2048": {
+          "n": 50,
+          "p50": 427.2,
+          "p95": 491.67,
+          "p99": 505.39,
+          "mean": 434.36
+        }
+      },
+      "generate_by_length": {
+        "128": {
+          "n": 20,
+          "p50": 376.3,
+          "p95": 390.64,
+          "p99": 392.17,
+          "mean": 378.51
+        },
+        "512": {
+          "n": 20,
+          "p50": 386.94,
+          "p95": 390.03,
+          "p99": 390.63,
+          "mean": 387.4
+        },
+        "1024": {
+          "n": 20,
+          "p50": 457.04,
+          "p95": 463.41,
+          "p99": 466.84,
+          "mean": 458.15
+        },
+        "2048": {
+          "n": 20,
+          "p50": 762.67,
+          "p95": 815.6,
+          "p99": 824.19,
+          "mean": 768.82
+        }
+      }
+    }
+  },
+  "machine": {
+    "platform": "Windows-10-10.0.26200-SP0",
+    "python": "3.11.0",
+    "cpu_count": 16,
+    "gpu": "NVIDIA GeForce RTX 5070, 617.14, 12227 MiB"
+  },
+  "batch": {
+    "student-large-AB": {
+      "gpu_util_before": 23,
+      "length": 512,
+      "1": {
+        "n": 50,
+        "p50": 19.83,
+        "p95": 23.18,
+        "p99": 24.51,
+        "mean": 20.18,
+        "items_per_s": 50.4
+      },
+      "8": {
+        "n": 50,
+        "p50": 73.91,
+        "p95": 74.55,
+        "p99": 74.66,
+        "mean": 73.89,
+        "items_per_s": 108.2
+      },
+      "32": {
+        "n": 50,
+        "p50": 293.84,
+        "p95": 296.38,
+        "p99": 297.02,
+        "mean": 294.14,
+        "items_per_s": 108.9
+      }
+    },
+    "student-AB": {
+      "gpu_util_before": 14,
+      "length": 512,
+      "1": {
+        "n": 50,
+        "p50": 15.51,
+        "p95": 17.43,
+        "p99": 19.51,
+        "mean": 15.94,
+        "items_per_s": 64.5
+      },
+      "8": {
+        "n": 50,
+        "p50": 30.76,
+        "p95": 31.31,
+        "p99": 31.45,
+        "mean": 30.79,
+        "items_per_s": 260.1
+      },
+      "32": {
+        "n": 50,
+        "p50": 122.66,
+        "p95": 124.29,
+        "p99": 124.95,
+        "mean": 122.89,
+        "items_per_s": 260.9
+      }
+    }
+  },
+  "http": {
+    "GPU student-large-AB, micro-batching (32 / 3 ms)": {
+      "env": {
+        "JUDGE_RUNTIME": "torch-cuda",
+        "JUDGE_MODEL_DIR": "models/student-large-AB",
+        "JUDGE_MAX_BATCH": "32",
+        "JUDGE_MAX_WAIT_MS": "3"
+      },
+      "gpu_util_before": 69,
+      "by_concurrency": {
+        "1": {
+          "n": 400,
+          "p50": 22.02,
+          "p95": 38.06,
+          "p99": 42.17,
+          "mean": 24.1,
+          "throughput_rps": 41.5,
+          "errors": 0,
+          "mean_batch_size": 1.09
+        },
+        "8": {
+          "n": 400,
+          "p50": 97.84,
+          "p95": 197.37,
+          "p99": 245.23,
+          "mean": 105.15,
+          "throughput_rps": 75.3,
+          "errors": 0,
+          "mean_batch_size": 1.66
+        },
+        "32": {
+          "n": 400,
+          "p50": 372.78,
+          "p95": 539.38,
+          "p99": 572.45,
+          "mean": 384.3,
+          "throughput_rps": 79.9,
+          "errors": 0,
+          "mean_batch_size": 2.323
+        }
+      }
+    },
+    "GPU student-large-AB, no batching": {
+      "env": {
+        "JUDGE_RUNTIME": "torch-cuda",
+        "JUDGE_MODEL_DIR": "models/student-large-AB",
+        "JUDGE_MAX_BATCH": "1",
+        "JUDGE_MAX_WAIT_MS": "0"
+      },
+      "gpu_util_before": 27,
+      "by_concurrency": {
+        "1": {
+          "n": 400,
+          "p50": 24.02,
+          "p95": 35.36,
+          "p99": 43.7,
+          "mean": 24.96,
+          "throughput_rps": 40.0,
+          "errors": 0,
+          "mean_batch_size": 1.0
+        },
+        "8": {
+          "n": 400,
+          "p50": 202.49,
+          "p95": 234.09,
+          "p99": 254.46,
+          "mean": 201.43,
+          "throughput_rps": 39.4,
+          "errors": 0,
+          "mean_batch_size": 1.0
+        },
+        "32": {
+          "n": 400,
+          "p50": 795.59,
+          "p95": 878.7,
+          "p99": 887.69,
+          "mean": 774.21,
+          "throughput_rps": 39.8,
+          "errors": 0,
+          "mean_batch_size": 1.0
+        }
+      }
+    },
+    "CPU student-AB ONNX INT8, micro-batching (8 / 3 ms)": {
+      "env": {
+        "JUDGE_RUNTIME": "onnx-int8",
+        "JUDGE_MODEL_DIR": "artifacts/student-AB",
+        "JUDGE_MAX_BATCH": "8",
+        "JUDGE_MAX_WAIT_MS": "3"
+      },
+      "gpu_util_before": 0,
+      "by_concurrency": {
+        "1": {
+          "n": 400,
+          "p50": 30.87,
+          "p95": 183.45,
+          "p99": 423.11,
+          "mean": 56.92,
+          "throughput_rps": 17.6,
+          "errors": 0,
+          "mean_batch_size": 1.09
+        },
+        "8": {
+          "n": 400,
+          "p50": 1130.35,
+          "p95": 2831.74,
+          "p99": 2892.59,
+          "mean": 1293.05,
+          "throughput_rps": 6.2,
+          "errors": 0,
+          "mean_batch_size": 1.66
+        }
+      }
+    },
+    "CPU student-AB ONNX INT8, no batching": {
+      "env": {
+        "JUDGE_RUNTIME": "onnx-int8",
+        "JUDGE_MODEL_DIR": "artifacts/student-AB",
+        "JUDGE_MAX_BATCH": "1",
+        "JUDGE_MAX_WAIT_MS": "0"
+      },
+      "gpu_util_before": 0,
+      "by_concurrency": {
+        "1": {
+          "n": 400,
+          "p50": 30.23,
+          "p95": 184.29,
+          "p99": 448.22,
+          "mean": 57.03,
+          "throughput_rps": 17.5,
+          "errors": 0,
+          "mean_batch_size": 1.0
+        },
+        "8": {
+          "n": 400,
+          "p50": 398.93,
+          "p95": 869.05,
+          "p99": 1126.44,
+          "mean": 444.09,
+          "throughput_rps": 17.9,
+          "errors": 0,
+          "mean_batch_size": 1.0
+        }
+      }
+    },
+    "Docker CPU image (student-AB INT8, no batching)": {
+      "env": {
+        "image": "guard-judge:cpu"
+      },
+      "gpu_util_before": null,
+      "by_concurrency": {
+        "1": {
+          "n": 400,
+          "p50": 34.26,
+          "p95": 222.2,
+          "p99": 475.82,
+          "mean": 64.59,
+          "throughput_rps": 15.5,
+          "errors": 0,
+          "mean_batch_size": 1.0
+        }
+      }
+    }
+  },
+  "cascade": {
+    "tier1": "student-large-AB (threshold 0.52, the Claude-matching operating point)",
+    "tiers": {
+      "Qwen3Guard-Gen-0.6B (local GPU, first-token scoring)": {
+        "note": "All 8,145 benchmark rows plus 283 teacher-holdout rows, ranked together.",
+        "metric_names": [
+          "Avg response F1",
+          "\u03ba vs Claude"
+        ],
+        "points": [
+          {
+            "escalated": 0.0,
+            "metrics": [
+              "64.0",
+              "0.696"
+            ],
+            "p50_ms": 18.0,
+            "p99_ms": 30.83848749999995,
+            "band": null
+          },
+          {
+            "escalated": 0.05,
+            "metrics": [
+              "66.7",
+              "0.708"
+            ],
+            "p50_ms": 18.0,
+            "p99_ms": 69.94265625,
+            "band": [
+              0.454,
+              0.5853
+            ]
+          },
+          {
+            "escalated": 0.1,
+            "metrics": [
+              "69.4",
+              "0.696"
+            ],
+            "p50_ms": 18.03265625,
+            "p99_ms": 119.18302851562487,
+            "band": [
+              0.3942,
+              0.6433
+            ]
+          },
+          {
+            "escalated": 0.2,
+            "metrics": [
+              "73.5",
+              "0.688"
+            ],
+            "p50_ms": 18.157838541666667,
+            "p99_ms": 160.6029906249997,
+            "band": [
+              0.2854,
+              0.7461
+            ]
+          },
+          {
+            "escalated": 0.3,
+            "metrics": [
+              "76.3",
+              "0.663"
+            ],
+            "p50_ms": 18.380989583333335,
+            "p99_ms": 177.2067779296874,
+            "band": [
+              0.1968,
+              0.8273
+            ]
+          },
+          {
+            "escalated": 0.5,
+            "metrics": [
+              "79.4",
+              "0.554"
+            ],
+            "p50_ms": 55.04,
+            "p99_ms": 193.59220703124998,
+            "band": [
+              0.0901,
+              0.9222
+            ]
+          }
+        ]
+      },
+      "Claude Sonnet 5.5 (the teacher; API)": {
+        "note": "Only the 272 human-labeled pilot rows (HarmBench + WildGuardTest) have Claude verdicts. Metrics are against human labels. Claude latency is 6 s per call (live calls measured on Day 1).",
+        "metric_names": [
+          "F1 vs human",
+          "\u03ba vs human"
+        ],
+        "points": [
+          {
+            "escalated": 0.0,
+            "metrics": [
+              "78.7",
+              "0.609"
+            ],
+            "p50_ms": 19.9838671875,
+            "p99_ms": 37.10759296875002
+          },
+          {
+            "escalated": 0.05,
+            "metrics": [
+              "78.7",
+              "0.617"
+            ],
+            "p50_ms": 20.073671875,
+            "p99_ms": 6023.772168945313
+          },
+          {
+            "escalated": 0.1,
+            "metrics": [
+              "81.0",
+              "0.654"
+            ],
+            "p50_ms": 20.108896484375002,
+            "p99_ms": 6027.050359375
+          },
+          {
+            "escalated": 0.2,
+            "metrics": [
+              "83.3",
+              "0.698"
+            ],
+            "p50_ms": 20.27896484375,
+            "p99_ms": 6035.64188671875
+          },
+          {
+            "escalated": 0.3,
+            "metrics": [
+              "83.8",
+              "0.712"
+            ],
+            "p50_ms": 20.738779296875002,
+            "p99_ms": 6035.64188671875
+          },
+          {
+            "escalated": 0.5,
+            "metrics": [
+              "85.2",
+              "0.735"
+            ],
+            "p50_ms": 3027.44109375,
+            "p99_ms": 6035.64188671875
+          }
+        ]
+      }
+    }
+  },
+  "quality": {
+    "artifact": "artifacts/student-AB",
+    "threshold": 0.3,
+    "rows_compared": 10207,
+    "decision_agreement_vs_bf16": 0.9782,
+    "avg_response_f1": {
+      "bf16": 0.7271,
+      "int8": 0.7166
+    },
+    "kappa_vs_teacher": {
+      "bf16": 0.626,
+      "int8": 0.626
+    }
+  }
+}
