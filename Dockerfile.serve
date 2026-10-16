@@ -1,0 +1,34 @@
+# CPU serving image for the distilled judge (ONNX Runtime, no torch).
+#
+#   python -m llm_eval_forge.serve.export models/student-AB --out artifacts/student-AB
+#   docker build -f Dockerfile.serve -t guard-judge:cpu .
+#   docker run --rm -p 8000:8000 guard-judge:cpu
+#   curl -X POST localhost:8000/v1/judge -H "Content-Type: application/json" \
+#        -d '{"prompt": "...", "response": "..."}'
+FROM python:3.11-slim
+
+WORKDIR /app
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
+
+# Serving dependencies only: the ONNX runtime path never imports torch or transformers.
+RUN pip install --no-cache-dir \
+        "fastapi==0.143.0" "uvicorn==0.54.0" "onnxruntime==1.31.0" "tokenizers==0.22.2" \
+        "numpy>=1.26,<3" "pydantic>=2.0"
+
+COPY pyproject.toml ./
+COPY src/ ./src/
+RUN pip install --no-cache-dir --no-deps .
+
+ARG MODEL=artifacts/student-AB
+COPY ${MODEL}/model.int8.onnx ${MODEL}/tokenizer.json ${MODEL}/serve_config.json /app/model/
+
+ENV JUDGE_MODEL_DIR=/app/model \
+    JUDGE_RUNTIME=onnx-int8 \
+    JUDGE_POLICY=teacher \
+    JUDGE_MAX_BATCH=1 \
+    JUDGE_MAX_WAIT_MS=0
+
+EXPOSE 8000
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s \
+    CMD python -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/healthz', timeout=4)"
+CMD ["uvicorn", "llm_eval_forge.serve.app:create_app", "--factory", "--host", "0.0.0.0", "--port", "8000"]

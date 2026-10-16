@@ -26,6 +26,7 @@ results/*
 !results/*.md
 !results/metrics/
 !results/training/
+!results/latency.json
 
 # Datasets and teacher labels (rebuild with `python -m llm_eval_forge.distill.data build`)
 data/
@@ -38,3 +39,6 @@ judge-batches/
 # Trained checkpoints (published to the HF Hub, not git)
 models/
 logs/
+
+# Exported serving artifacts (ONNX); rebuild with python -m llm_eval_forge.serve.export
+artifacts/

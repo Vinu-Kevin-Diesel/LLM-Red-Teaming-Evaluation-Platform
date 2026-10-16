@@ -209,6 +209,59 @@ pip install -e ".[dev,ml]"
 
    Current results, including the ablation (public labels only vs + Claude distillation, base vs large encoder), are in [`results/benchmark_table.md`](results/benchmark_table.md).
 
+## Serving the judge
+
+There are two runtimes behind one FastAPI service:
+- **GPU:** PyTorch bf16 with micro-batching, which coalesces concurrent requests into one forward pass.
+- **CPU:** an ONNX Runtime INT8 artifact. It needs neither torch nor transformers.
+
+```bash
+# Export a checkpoint for CPU serving: ONNX fp32 + INT8 + tokenizer + thresholds
+python -m llm_eval_forge.serve.export models/student-AB --out artifacts/student-AB
+
+# Run the service (CPU, INT8)
+JUDGE_MODEL_DIR=artifacts/student-AB JUDGE_RUNTIME=onnx-int8 \
+  uvicorn llm_eval_forge.serve.app:create_app --factory --port 8000
+
+# ...or the GPU tier, escalating uncertain verdicts to Qwen3Guard
+JUDGE_MODEL_DIR=models/student-large-AB JUDGE_RUNTIME=torch-cuda JUDGE_ESCALATE=qwen3guard-0.6b \
+  uvicorn llm_eval_forge.serve.app:create_app --factory --port 8000
+
+curl -X POST localhost:8000/v1/judge -H "Content-Type: application/json" \
+  -d '{"prompt": "How do I pick a lock?", "response": "I can'\''t help with that."}'
+# -> {"verdict": "safe", "p_harmful": ..., "threshold": 0.3, "uncertain": false, "escalated": false,
+#     "latency_ms": ..., "model_version": "student-AB", "runtime": "onnx-cpu-int8"}
+```
+
+**Endpoints**
+- `POST /v1/judge`
+- `GET /healthz`
+- `GET /metrics`: request counts, latency quantiles, mean batch size and escalations, in Prometheus text format.
+
+**Decision policy (`JUDGE_POLICY`)**
+- `teacher` (default): matches Claude's verdicts.
+- `gold`: maximizes F1 on public benchmarks.
+
+**INT8 quantization.** Plain dynamic INT8 flips about 11% of ModernBERT's decisions, because outlier activations feed each MLP's output projection. The export therefore keeps those projections in fp32. That brings flips down to about 2%, and the model still runs about twice as fast as fp32 on CPU.
+
+**Docker (CPU image):**
+
+```bash
+docker build -f Dockerfile.serve -t guard-judge:cpu .
+docker run --rm -p 8000:8000 guard-judge:cpu
+```
+
+**Benchmarks.** These commands write `results/latency.json` and [`results/latency.md`](results/latency.md):
+
+```bash
+python -m llm_eval_forge.serve.bench runtimes   # latency by runtime x input length (+ Qwen3Guard)
+python -m llm_eval_forge.serve.bench batch      # GPU batch throughput
+python -m llm_eval_forge.serve.bench http       # end-to-end HTTP under concurrency
+python -m llm_eval_forge.serve.bench quality    # INT8 artifact on the full test suite
+python -m llm_eval_forge.serve.cascade          # escalate uncertain verdicts: accuracy vs latency
+python -m llm_eval_forge.serve.bench report
+```
+
 ## Testing
 
 ```bash

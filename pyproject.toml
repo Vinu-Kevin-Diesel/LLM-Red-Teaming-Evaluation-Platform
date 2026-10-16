@@ -23,7 +23,9 @@ dependencies = [
 llm-eval-forge = "llm_eval_forge.cli:main"
 
 [project.optional-dependencies]
-dev = ["pytest>=8.0", "pytest-asyncio>=0.24"]
+dev = ["pytest>=8.0", "pytest-asyncio>=0.24", "fastapi>=0.110"]
+# Serving the exported judge on CPU (ONNX Runtime; no torch needed)
+serve = ["fastapi>=0.110", "uvicorn>=0.30", "onnxruntime>=1.19", "tokenizers>=0.21", "numpy>=1.26"]
 # Distillation, training and serving of the small judge (install torch from the CUDA index first)
 ml = [
     "datasets>=3.0",
@@ -33,7 +35,10 @@ ml = [
     "peft>=0.13",
     "scikit-learn>=1.5",
     "onnx>=1.16",
+    "onnx-ir>=0.1",
     "onnxruntime>=1.19",
+    "fastapi>=0.110",
+    "uvicorn>=0.30",
 ]
 
 [tool.setuptools.packages.find]
