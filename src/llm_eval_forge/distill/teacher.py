@@ -373,6 +373,13 @@ def report(data_dir: Path, set_name: str, out: Path) -> str:
     return text
 
 
+# Labeling and dataset work is done in Claude Code sessions, not through the API key. The API
+# commands stay available for reproducibility but only run with an explicit --allow-api.
+API_COMMANDS = {"submit", "recover"}
+API_REFUSAL = ("'{cmd}' sends rows to the paid Anthropic API, which this project no longer uses for labeling "
+               "(labels are produced in Claude Code sessions). Pass --allow-api to run it anyway.")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Claude teacher labeling via the Batch API")
     parser.add_argument("cmd", choices=["estimate", "submit", "status", "wait", "collect", "recover", "report"])
@@ -381,7 +388,11 @@ def main() -> None:
     parser.add_argument("--model", default=TEACHER_MODEL, choices=sorted(BATCH_PRICE_PER_MTOK))
     parser.add_argument("--effort", default=TEACHER_EFFORT)
     parser.add_argument("--limit", type=int, default=None)
+    parser.add_argument("--allow-api", action="store_true",
+                        help="Required for submit/recover: these send rows to the paid Anthropic API")
     args = parser.parse_args()
+    if args.cmd in API_COMMANDS and not args.allow_api:
+        raise SystemExit(API_REFUSAL.format(cmd=args.cmd))
 
     from dotenv import load_dotenv
 

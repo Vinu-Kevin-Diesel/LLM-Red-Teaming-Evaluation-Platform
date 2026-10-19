@@ -1,0 +1,103 @@
+{
+  "name": "granite-guardian-3.2-3b",
+  "kind": "baseline",
+  "threshold": 0.5,
+  "temperature": 1.95,
+  "sets": {
+    "aegis2_test": {
+      "n": 1914,
+      "f1": 0.7931,
+      "precision": 0.6973,
+      "recall": 0.9194,
+      "accuracy": 0.7419,
+      "kappa": 0.4668,
+      "fpr": 0.4649,
+      "auroc": 0.8624,
+      "ece": 0.1208,
+      "ece_scaled": 0.0506,
+      "positives": 1030,
+      "safe_block_rate": 0.4649
+    },
+    "jbb_behaviors": {
+      "n": 200,
+      "f1": 0.72,
+      "precision": 0.5657,
+      "recall": 0.99,
+      "accuracy": 0.615,
+      "kappa": 0.23,
+      "fpr": 0.76,
+      "auroc": 0.905,
+      "ece": 0.2971,
+      "ece_scaled": 0.2249,
+      "positives": 100,
+      "safe_block_rate": 0.76
+    },
+    "toxicchat_test": {
+      "n": 2853,
+      "f1": 0.5385,
+      "precision": 0.3761,
+      "recall": 0.9475,
+      "accuracy": 0.7939,
+      "kappa": 0.436,
+      "fpr": 0.2284,
+      "auroc": 0.9465,
+      "ece": 0.0463,
+      "ece_scaled": 0.0893,
+      "positives": 362,
+      "safe_block_rate": 0.2284
+    },
+    "wildguardtest": {
+      "n": 1699,
+      "f1": 0.7748,
+      "precision": 0.6648,
+      "recall": 0.9284,
+      "accuracy": 0.7604,
+      "kappa": 0.5335,
+      "fpr": 0.3735,
+      "auroc": 0.9043,
+      "ece": 0.1003,
+      "ece_scaled": 0.0453,
+      "positives": 754,
+      "safe_block_rate": 0.3735,
+      "adversarial_f1": 0.6997
+    },
+    "xstest_prompts": {
+      "n": 450,
+      "f1": 0.8082,
+      "precision": 0.6877,
+      "recall": 0.98,
+      "accuracy": 0.7933,
+      "kappa": 0.5986,
+      "fpr": 0.356,
+      "auroc": 0.9356,
+      "ece": 0.0959,
+      "ece_scaled": 0.0558,
+      "positives": 200,
+      "safe_block_rate": 0.356
+    },
+    "val": {
+      "n": 2161,
+      "f1": 0.7994,
+      "precision": 0.6984,
+      "recall": 0.9345,
+      "accuracy": 0.7515,
+      "kappa": 0.4903,
+      "fpr": 0.4547,
+      "auroc": 0.9015,
+      "ece": 0.1063,
+      "ece_scaled": 0.0358,
+      "positives": 1145,
+      "safe_block_rate": 0.4547,
+      "adversarial_f1": 0.7392
+    }
+  },
+  "seconds": {
+    "aegis2_test": 54.7,
+    "jbb_behaviors": 2.2,
+    "toxicchat_test": 42.3,
+    "wildguardtest": 32.8,
+    "xstest_prompts": 5.0,
+    "val": 46.8
+  },
+  "avg_prompt_f1": 0.7021
+}

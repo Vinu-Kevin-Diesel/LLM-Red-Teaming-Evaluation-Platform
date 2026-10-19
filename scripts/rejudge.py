@@ -35,6 +35,8 @@ def main() -> None:
     parser.add_argument("--model", default=None, help="Judge model (default: judge backend default)")
     parser.add_argument("--effort", default="low")
     parser.add_argument("--dry-run", action="store_true", help="Only count rows that would be re-judged")
+    parser.add_argument("--allow-api", action="store_true",
+                        help="Required to re-judge: each row is a paid Anthropic API call")
     args = parser.parse_args()
 
     load_dotenv()
@@ -43,6 +45,8 @@ def main() -> None:
     print(f"{len(todo)}/{len(rows)} rows need re-judging")
     if args.dry_run or not todo:
         return
+    if not args.allow_api:
+        raise SystemExit("Re-judging calls the paid Anthropic API for every row; pass --allow-api to proceed.")
 
     judge = LLMJudge(model=args.model, effort=args.effort)
     fields = {f.name for f in dataclasses.fields(EvalResult)}

@@ -26,10 +26,18 @@ def load_serve_config(model_dir: Path) -> dict:
     path = Path(model_dir) / "serve_config.json"
     if path.exists():
         return json.loads(path.read_text(encoding="utf-8"))
-    metrics = Path("results/metrics") / f"{Path(model_dir).name}.json"
-    m = json.loads(metrics.read_text(encoding="utf-8")) if metrics.exists() else {}
-    return {"model_version": Path(model_dir).name, "max_len": 2048,
-            "thresholds": {"teacher": m.get("teacher_threshold", 0.5), "gold": m.get("threshold", 0.5)},
+    name = Path(model_dir).name
+    # Response judges keep metrics in results/metrics, input guards in results/metrics_prompt,
+    # tool-call guards in results/metrics_toolcall.
+    m = {}
+    for metrics in (Path("results/metrics") / f"{name}.json", Path("results/metrics_prompt") / f"{name}.json",
+                    Path("results/metrics_toolcall") / f"{name}.json"):
+        if metrics.exists():
+            m = json.loads(metrics.read_text(encoding="utf-8"))
+            break
+    gold = m.get("threshold", 0.5)
+    return {"model_version": name, "max_len": 2048,
+            "thresholds": {"teacher": m.get("teacher_threshold", gold), "gold": gold},
             "uncertain_band": [0.2, 0.8]}
 
 
