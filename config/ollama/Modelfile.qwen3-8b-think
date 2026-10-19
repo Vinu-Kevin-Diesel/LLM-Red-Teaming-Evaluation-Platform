@@ -1,0 +1,7 @@
+# Agent model for the AgentDojo runs: qwen3:8b with thinking on.
+#   ollama create qwen3-8b-think -f config/ollama/Modelfile.qwen3-8b-think
+# A 16K context holds AgentDojo's tool schemas and outputs entirely on a 12 GB GPU (the default
+# 40K context spills to the CPU); 4096 new tokens leave room for the reasoning before a tool call.
+FROM qwen3:8b
+PARAMETER num_ctx 16384
+PARAMETER num_predict 4096

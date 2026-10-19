@@ -188,3 +188,13 @@ def test_batches_for_filters_by_policy(tmp_path):
     T.log_batch(tmp_path, {"set": "pool", "batch_id": "other", "policy": T.POLICY_VERSION})
     assert [e["batch_id"] for e in T.batches_for(tmp_path, "pilot")] == ["new"]
     assert [e["batch_id"] for e in T.batches_for(tmp_path, "pilot", policy="v1")] == ["old"]
+
+
+def test_api_commands_refuse_without_allow_api(monkeypatch, capsys):
+    import sys
+
+    for cmd in sorted(T.API_COMMANDS):
+        monkeypatch.setattr(sys, "argv", ["teacher", cmd, "pilot"])
+        with pytest.raises(SystemExit) as exc:
+            T.main()
+        assert "--allow-api" in str(exc.value)

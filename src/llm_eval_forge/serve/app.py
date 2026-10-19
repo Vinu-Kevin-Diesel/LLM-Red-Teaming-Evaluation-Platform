@@ -11,6 +11,8 @@ Configuration (environment):
     JUDGE_ESCALATE     optional second tier for uncertain verdicts, e.g. qwen3guard-0.6b
     JUDGE_UNCERTAIN_BAND  "lo,hi" probability band that counts as uncertain (default from serve_config);
                           results/latency.md lists the band for each escalation rate
+    JUDGE_TOOLCALL_MODEL_DIR / JUDGE_TOOLCALL_RUNTIME  optional tool-call guard for agents
+                          (POST /v1/judge/tool_call; returns 501 when not configured)
 """
 from __future__ import annotations
 
@@ -47,11 +49,28 @@ class JudgeResponse(BaseModel):
     runtime: str
 
 
-class ToolCallRequest(BaseModel):
-    user_goal: str
+class ToolCall(BaseModel):
     tool_name: str
     arguments: dict = Field(default_factory=dict)
-    history: list[dict] = Field(default_factory=list)
+
+
+class ToolCallRequest(BaseModel):
+    user_goal: str = Field(max_length=MAX_CHARS, description="The user's original request to the agent")
+    tool_name: str
+    arguments: dict = Field(default_factory=dict)
+    history: list[ToolCall] = Field(default_factory=list, description="Calls the agent already made, in order")
+    tool_outputs: list[str] = Field(default_factory=list,
+                                    description="All tool results so far, oldest first (where injections arrive)")
+    last_tool_output: str = Field(default="", max_length=MAX_CHARS,
+                                  description="Deprecated: use tool_outputs; treated as a one-item list")
+
+
+class ToolCallResponse(BaseModel):
+    decision: Literal["allow", "block"]
+    p_attack: float = Field(description="P(the call was induced by injected content, not the user)")
+    threshold: float
+    latency_ms: float
+    model_version: str
 
 
 class Metrics:
@@ -118,8 +137,18 @@ def _band(cfg: dict) -> tuple[float, float]:
     return float(lo), float(hi)
 
 
+def _env_toolcall_runtime():
+    model_dir = os.environ.get("JUDGE_TOOLCALL_MODEL_DIR", "").strip()
+    if not model_dir:
+        return None
+    from llm_eval_forge.serve.runtime import load_runtime
+
+    return load_runtime(os.environ.get("JUDGE_TOOLCALL_RUNTIME", "torch-cuda"), model_dir)
+
+
 def create_app(runtime=None, escalator=None, policy: str | None = None,
-               max_batch: int | None = None, max_wait_ms: float | None = None) -> FastAPI:
+               max_batch: int | None = None, max_wait_ms: float | None = None,
+               toolcall_runtime=None) -> FastAPI:
     state: dict = {}
 
     @asynccontextmanager
@@ -136,8 +165,15 @@ def create_app(runtime=None, escalator=None, policy: str | None = None,
                                  max_wait_ms if max_wait_ms is not None else float(os.environ.get("JUDGE_MAX_WAIT_MS", 3))),
             escalation_lock=asyncio.Lock(),
             metrics=Metrics(),
+            toolcall=toolcall_runtime if toolcall_runtime is not None else _env_toolcall_runtime(),
+            toolcall_lock=asyncio.Lock(),
+            toolcall_decisions=Counter(),
         )
+        tc_cfg = getattr(state["toolcall"], "config", {}) or {}
+        state["toolcall_threshold"] = float(tc_cfg.get("thresholds", {}).get("gold", 0.5))
         rt.predict([("warm-up", "warm-up")])  # first call pays graph/kernel initialization
+        if state["toolcall"] is not None:
+            state["toolcall"].predict([("GOAL: warm-up", "PROPOSED CALL: warm_up({})")])
         state["batcher"].start()
         yield
         await state["batcher"].stop()
@@ -172,13 +208,32 @@ def create_app(runtime=None, escalator=None, policy: str | None = None,
                              escalated_to=esc.name if escalated else None, latency_ms=round(latency_ms, 3),
                              model_version=rt.model_version, runtime=rt.name)
 
-    @app.post("/v1/judge/tool_call", status_code=501)
-    async def judge_tool_call(req: ToolCallRequest) -> dict:
-        raise HTTPException(status_code=501, detail="Tool-call judging is not implemented yet.")
+    @app.post("/v1/judge/tool_call", response_model=ToolCallResponse)
+    async def judge_tool_call(req: ToolCallRequest) -> ToolCallResponse:
+        tc = state["toolcall"]
+        if tc is None:
+            raise HTTPException(status_code=501, detail="No tool-call guard configured (set JUDGE_TOOLCALL_MODEL_DIR).")
+        from llm_eval_forge.agent.toolcall_data import call_text, format_toolcall
+
+        t0 = time.perf_counter()
+        outputs = req.tool_outputs or ([req.last_tool_output] if req.last_tool_output else [])
+        context, proposed = format_toolcall(
+            req.user_goal, [call_text({"function": h.tool_name, "args": h.arguments}) for h in req.history],
+            {"function": req.tool_name, "args": req.arguments}, outputs)
+        async with state["toolcall_lock"]:
+            p = (await asyncio.get_running_loop().run_in_executor(None, tc.predict, [(context, proposed)]))[0]
+        decision = "block" if p >= state["toolcall_threshold"] else "allow"
+        state["toolcall_decisions"][decision] += 1
+        return ToolCallResponse(decision=decision, p_attack=round(p, 6), threshold=state["toolcall_threshold"],
+                                latency_ms=round((time.perf_counter() - t0) * 1000, 3), model_version=tc.model_version)
 
     @app.get("/metrics", response_class=PlainTextResponse)
     async def metrics() -> str:
         rt = state["runtime"]
-        return state["metrics"].render(state["batcher"].stats.mean_batch_size, rt.model_version, rt.name)
+        text = state["metrics"].render(state["batcher"].stats.mean_batch_size, rt.model_version, rt.name)
+        decisions = sorted(state["toolcall_decisions"].items())
+        text += "# TYPE judge_toolcall_decisions_total counter\n"
+        text += "".join(f'judge_toolcall_decisions_total{{decision="{d}"}} {n}\n' for d, n in decisions)
+        return text
 
     return app

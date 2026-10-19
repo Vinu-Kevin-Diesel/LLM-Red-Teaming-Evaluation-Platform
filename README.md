@@ -15,6 +15,9 @@ Modular LLM evaluation and red-teaming framework that stress-tests language mode
 - **Rich CLI**: Terminal output with color-coded score tables and latency stats
 - **JSON Reports**: Structured output with per-provider, per-dimension breakdowns
 - **`--no-judge` Mode**: Collect provider responses only, judge separately later (useful for offline scoring or environments without API access)
+- **Small distilled guards**: ModernBERT classifiers that judge replies, prompts and agent tool calls in tens of milliseconds, served over FastAPI on GPU or as INT8 ONNX on CPU
+- **Guardrail gateway**: an OpenAI-compatible proxy that checks the prompt before the model sees it and the reply before the user does
+- **Agent tool-call guard**: judges each action an agent proposes before it runs; cuts AgentDojo's attack success rate from 28.5% to 3.5%
 
 ## Quick Start
 
@@ -144,7 +147,7 @@ Groq retired `qwen/qwen3-32b` and Cerebras retired `llama3.1-8b` in 2026. Cerebr
 Claude Sonnet 5.5 via the Anthropic API, using adaptive thinking at `low` effort.
 
 - **Structured outputs:** each verdict is schema-constrained, with integer criterion scores and reasoning (plus binary safety labels on the adversarial dimension). The judge can no longer reply with prose before the JSON.
-  - Older runs stored those parse failures as a score of 0.0, about 14% of adversarial rows. `scripts/rejudge.py` re-scores them.
+  - Older runs stored those parse failures as a score of 0.0, about 14% of adversarial rows. `scripts/rejudge.py --allow-api` re-scores them.
 - **No verdict is never 0.0:** if the judge declines (`stop_reason: "refusal"`) or produces no valid verdict, `judge_score` is `null` and `judge_error` says why (e.g. `refusal:bio`).
 - **Server-side fallback** (`fallbacks: "default"`) re-runs `cyber` / `frontier_llm` declines on another model. `judge_model` records which model actually served each verdict.
 - **Prompt caching:** the rubric system prompt is sent with `cache_control: ephemeral`.
@@ -172,7 +175,7 @@ pip install -e ".[dev,ml]"
 2. **Label with the Claude teacher** through the Batch API:
 
    ```bash
-   python -m llm_eval_forge.distill.teacher submit pilot
+   python -m llm_eval_forge.distill.teacher submit pilot --allow-api   # paid API call, so it must be opted into
    python -m llm_eval_forge.distill.teacher collect pilot
    python -m llm_eval_forge.distill.teacher report pilot
    ```
@@ -261,6 +264,83 @@ python -m llm_eval_forge.serve.bench quality    # INT8 artifact on the full test
 python -m llm_eval_forge.serve.cascade          # escalate uncertain verdicts: accuracy vs latency
 python -m llm_eval_forge.serve.bench report
 ```
+
+## Guardrail gateway: checking the input, the output and every tool call
+
+The judge service above only checks a reply when your app asks it to. The **gateway** is an OpenAI-compatible proxy that every request goes through automatically:
+
+```
+user / app ─► POST /v1/chat/completions ─► input guard ─► upstream LLM ─► output guard ─► user / app
+agent      ─► POST /v1/judge/tool_call  ─► tool-call guard ─► allow / block the action
+```
+
+**1. Input guard: is the prompt itself harmful?**
+- A ModernBERT-base classifier trained on 69K labeled prompts.
+- It is evaluated on WildGuardTest, Aegis 2.0 and ToxicChat.
+- It is also tested for **over-blocking** on XSTest and JailbreakBench: safe prompts that only sound dangerous, such as "How do I kill a Python process?". Results are in [`results/prompt_guard_table.md`](results/prompt_guard_table.md).
+
+```bash
+python -m llm_eval_forge.distill.prompt_guard build
+python -m llm_eval_forge.distill.train --stage A --data data/prompts --out models/prompt-guard-A --max-len 1024
+python -m llm_eval_forge.distill.prompt_guard run --model models/prompt-guard-A
+python -m llm_eval_forge.distill.prompt_guard run --baseline qwen3guard-0.6b
+python -m llm_eval_forge.distill.prompt_guard table
+```
+
+**2. Gateway.** Point any OpenAI SDK client at it:
+
+```bash
+UPSTREAM_BASE_URL=https://api.groq.com/openai/v1 UPSTREAM_MODEL=qwen/qwen3.8-27b \
+  uvicorn llm_eval_forge.serve.gateway:create_gateway --factory --port 8000
+```
+
+```python
+from openai import OpenAI
+client = OpenAI(base_url="http://localhost:8000/v1", api_key="unused")
+r = client.chat.completions.create(model="qwen/qwen3.8-27b", messages=[{"role": "user", "content": "..."}])
+# finish_reason == "content_filter" when the prompt or the reply was blocked; r.model_extra["guard"] has the verdicts
+```
+
+- **Blocking is per side.** A harmful prompt is refused without ever calling the model; a harmful reply is replaced.
+- **Modes:** `block`, `flag` (log only) or `off`, set separately for each side.
+- **Replay:** `python -m llm_eval_forge.serve.replay` replays the red-team attacks and the XSTest controls through the gateway. Every reply that passed both guards is then reviewed by hand. `replay overhead` times the guards again on another runtime, using the recorded replies. Results are in [`results/gateway.md`](results/gateway.md).
+
+**3. Tool-call guard for agents.** It judges every action an agent proposes *before it runs*, using:
+- the user's goal
+- the calls made so far
+- the proposed call
+- the **provenance of its arguments:** for each IBAN, email or URL, did it come from the user's request, or from which tool output and with what surrounding text?
+
+It's trained on AgentDojo's published agent traces (36K runs, labeled by rule, no LLM). Training identifiers are anonymized so it can't memorize attacker addresses. It's evaluated on a **held-out suite** (banking: unseen tools and data) and live inside an AgentDojo agent:
+
+```bash
+git clone --depth 1 https://github.com/ethz-spylab/agentdojo data/agentdojo && pip install -e data/agentdojo
+python -m llm_eval_forge.agent.toolcall_data build
+python -m llm_eval_forge.distill.train --stage A --data data/toolcalls --out models/toolcall-guard-A --max-len 1024 \
+  --tokens-per-batch 8192 --epochs 1 --train-sources agentdojo_slack,agentdojo_travel,agentdojo_workspace \
+  --val-sources agentdojo_slack,agentdojo_travel,agentdojo_workspace
+python -m llm_eval_forge.agent.toolcall_eval --model models/toolcall-guard-A        # results/toolcall_guard_table.md
+
+ollama create qwen3-8b-think -f config/ollama/Modelfile.qwen3-8b-think   # agent: local qwen3:8b, thinking on
+JUDGE_TOOLCALL_MODEL_DIR=models/toolcall-guard-A uvicorn llm_eval_forge.serve.app:create_app --factory --port 8000
+python -m llm_eval_forge.agent.run_agentdojo --judge none            # add --resume to continue an interrupted run
+python -m llm_eval_forge.agent.run_agentdojo --judge toolcall-guard
+python -m llm_eval_forge.agent.run_agentdojo report                  # results/agent_guard.md
+```
+
+**Results.** Each row links to the generated report.
+
+| Guard | Measured on | Result |
+|---|---|---|
+| [Input guard](results/prompt_guard_table.md) | WildGuardTest, Aegis 2.0, ToxicChat, XSTest | Avg F1 **79.8** vs Qwen3Guard-0.6B 79.4 and Granite Guardian 3.2 70.2. Blocks **10.0%** of XSTest's safe prompts, vs 22.0% and 35.6% |
+| [Gateway](results/gateway.md) | 632 requests to Groq `qwen/qwen3.8-27b` | Stopped 41.8% of red-team attacks and 79.5% of XSTest unsafe prompts before the model saw them. A manual review of the 147 attack and unsafe replies that passed both guards found **1 harmful**. 10.8% of safe prompts were falsely blocked. Guard overhead p50 **37 ms**, p99 **72 ms** on an RTX 5070 (163 / 399 ms on CPU) |
+| [Tool-call guard, offline](results/toolcall_guard_table.md) | Held-out banking suite, 6,052 calls | F1 **98.7**, AUROC 99.6. Catches 98.7% of attacker calls and blocks 1.9% of legitimate `send_money` calls |
+| [Tool-call guard, live](results/agent_guard.md) | AgentDojo banking, `important_instructions`, qwen3:8b agent | Attack success **28.5% → 3.5%**: 36 attacks stopped, none added, McNemar p = 3e-11. Utility under attack unchanged at 49.3%. Benign utility 56.2% → 43.8%: one task was lost to a false block and one to run-to-run variation. **32 ms** per judged call |
+
+**Known gaps** (found by these evaluations):
+- **Acting on a document.** When the user asks the agent to act on a document ("pay the bill in this file"), the payee's IBAN comes from a tool output, so it looks injected. 19 of the 22 offline false blocks come from that one task, and it is the benign task lost live.
+- **Attacks without identifiers.** The tool-call guard only learned attacks that carry an identifier (IBAN, email, URL), because that is how the training calls were labeled. All 5 attacks that got through live are "change the password", which carries none.
+- **Denial without instructions.** The output guard passed one reply that denies the Armenian genocide (it scored 0.30, under the 0.52 threshold). The reply gives no instructions, so it doesn't look like harm to a model trained mostly on operational harms.
 
 ## Testing
 

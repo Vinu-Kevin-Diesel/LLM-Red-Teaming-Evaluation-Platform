@@ -44,6 +44,8 @@ class TrainConfig:
     limit: int | None = None
     vram_fraction: float = 0.85
     grad_ckpt: bool = False  # recompute activations in backward; needed for ModernBERT-large on 12 GB
+    train_sources: tuple[str, ...] = tuple(sorted(PUBLIC_TRAIN))
+    val_sources: tuple[str, ...] = tuple(sorted(GOLD_VAL))
 
 
 # --------------------------------------------------------------------------- data
@@ -91,9 +93,9 @@ def teacher_labels(data_dir: Path) -> dict[str, dict]:
     return {r["id"]: r for r in map(json.loads, path.read_text(encoding="utf-8").splitlines()) if r["status"] == "ok"}
 
 
-def stage_a_examples(data_dir: Path) -> list[tuple[str, str, float]]:
+def stage_a_examples(data_dir: Path, sources: set[str] = PUBLIC_TRAIN) -> list[tuple[str, str, float]]:
     held = holdout_ids(data_dir)
-    rows = read_split(data_dir, "train", PUBLIC_TRAIN)
+    rows = read_split(data_dir, "train", set(sources))
     return [(r["prompt"], r["response"], float(r["label"])) for r in rows if r["label"] is not None and r["id"] not in held]
 
 
@@ -108,9 +110,9 @@ def stage_b_examples(data_dir: Path) -> list[tuple[str, str, float]]:
     return out
 
 
-def gold_val_examples(data_dir: Path) -> tuple[list[tuple[str, str, float]], list[str]]:
+def gold_val_examples(data_dir: Path, sources: set[str] = GOLD_VAL) -> tuple[list[tuple[str, str, float]], list[str]]:
     """Gold-labeled validation examples and the source of each."""
-    rows = [r for r in read_split(data_dir, "val", GOLD_VAL) if r["label"] is not None]
+    rows = [r for r in read_split(data_dir, "val", set(sources)) if r["label"] is not None]
     return [(r["prompt"], r["response"], float(r["label"])) for r in rows], [r["source"] for r in rows]
 
 
@@ -187,11 +189,11 @@ def predict_proba(model, tok, torch, examples, max_len: int = 2048, tokens_per_b
 def train(cfg: TrainConfig) -> dict:
     data_dir = Path(cfg.data)
     rng = random.Random(cfg.seed)
-    examples = stage_a_examples(data_dir) if cfg.stage == "A" else stage_b_examples(data_dir)
+    examples = stage_a_examples(data_dir, set(cfg.train_sources)) if cfg.stage == "A" else stage_b_examples(data_dir)
     if cfg.limit:
         rng.shuffle(examples)
         examples = examples[: cfg.limit]
-    val, val_sources = gold_val_examples(data_dir)
+    val, val_sources = gold_val_examples(data_dir, set(cfg.val_sources))
     # Stage A is selected on gold labels; Stage B (distillation) on agreement with the teacher.
     select_on = "gold"
     if cfg.stage == "B":
@@ -306,6 +308,10 @@ def main() -> None:
     parser.add_argument("--limit", type=int, default=None, help="Train on a random subset (smoke tests)")
     parser.add_argument("--evals-per-epoch", type=int, default=4)
     parser.add_argument("--grad-ckpt", action="store_true", help="Gradient checkpointing (larger models)")
+    parser.add_argument("--train-sources", default=",".join(sorted(PUBLIC_TRAIN)),
+                        help="Comma-separated source names under <data>/train (Stage A)")
+    parser.add_argument("--val-sources", default=",".join(sorted(GOLD_VAL)),
+                        help="Comma-separated source names under <data>/val")
     args = parser.parse_args()
     defaults = {"A": (2.0, 3e-5), "B": (2.0, 2e-5)}[args.stage]
     cfg = TrainConfig(
@@ -313,6 +319,7 @@ def main() -> None:
         epochs=args.epochs or defaults[0], lr=args.lr or defaults[1],
         max_len=args.max_len, tokens_per_batch=args.tokens_per_batch, limit=args.limit,
         evals_per_epoch=args.evals_per_epoch, grad_ckpt=args.grad_ckpt,
+        train_sources=tuple(args.train_sources.split(",")), val_sources=tuple(args.val_sources.split(",")),
     )
     train(cfg)
 

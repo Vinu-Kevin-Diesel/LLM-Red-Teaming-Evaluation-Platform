@@ -14,6 +14,15 @@ from llm_eval_forge.distill.train import token_budget_batches
 MAX_FIELD_CHARS = 8000
 
 
+def _turns(prompt: str, response: str) -> list[dict]:
+    """Prompt moderation when there is no response (input guard), response moderation otherwise.
+    Both guards judge the last turn of the conversation they are given."""
+    turns = [{"role": "user", "content": prompt}]
+    if response:
+        turns.append({"role": "assistant", "content": response})
+    return turns
+
+
 class FirstTokenGuard:
     """P(unsafe) = mass on the unsafe verdict tokens / mass on all verdict tokens."""
 
@@ -76,8 +85,7 @@ class Qwen3GuardGen(FirstTokenGuard):
     safe_ids = [22291]  # " Safe"
 
     def build(self, prompt: str, response: str) -> str:
-        chat = self.tok.apply_chat_template(
-            [{"role": "user", "content": prompt}, {"role": "assistant", "content": response}], tokenize=False)
+        chat = self.tok.apply_chat_template(_turns(prompt, response), tokenize=False)
         return chat + "Safety:"
 
 
@@ -92,8 +100,7 @@ class GraniteGuardian(FirstTokenGuard):
 
     def build(self, prompt: str, response: str) -> str:
         return self.tok.apply_chat_template(
-            [{"role": "user", "content": prompt}, {"role": "assistant", "content": response}],
-            guardian_config={"risk_name": "harm"}, add_generation_prompt=True, tokenize=False)
+            _turns(prompt, response), guardian_config={"risk_name": "harm"}, add_generation_prompt=True, tokenize=False)
 
 
 BASELINES: dict[str, Callable[[], FirstTokenGuard]] = {

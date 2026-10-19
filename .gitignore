@@ -27,6 +27,10 @@ results/*
 !results/metrics/
 !results/training/
 !results/latency.json
+!results/gateway.json
+!results/agent_guard.json
+!results/metrics_prompt/
+!results/metrics_toolcall/
 
 # Datasets and teacher labels (rebuild with `python -m llm_eval_forge.distill.data build`)
 data/
